@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls xmlns="http://www.powersi.com.cn/schema/sqls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.powersi.com.cn/schema/sqls ../../sqls.xsd"
+	default-table="SYS_STAFF">
+<!-- sql begin -->
+<sql id="checkLoginUserRepeate" desc="检查登录用户名是否重复" execute="find" parameter="index" result="int">
+<![CDATA[
+select count(1)
+  from sys_staff
+ where login_user = ?
+   and staff_id <> ?
+]]>
+</sql>
+
+<sql id="insertUser" desc="保存用户数据" execute="insert">
+	<dao />
+</sql>
+
+<sql id="updateUser" desc="更新用户数据" execute="update">
+	<dao wheres="staff_id" />
+</sql>
+
+<sql id="insertUserOrg" desc="保存用户机构" execute="insert">
+	<dao table="SYS_STAFF_ORG" />
+</sql>
+
+<sql id="insertStaffHis" desc="插入操作员历史表" execute="update" parameter="index">
+<![CDATA[
+insert into sys_staff_his
+  select * from sys_staff where staff_id = ?
+]]>
+</sql>
+
+<sql id="deleteStaff" desc="删除操作员" execute="delete" parameter="index">
+<![CDATA[
+delete from sys_staff where staff_id = ?
+]]>
+</sql>
+
+<sql id="findUser" desc="查找用户" execute="find" parameter="index" result="Map">
+<![CDATA[
+select * from sys_staff where staff_id = ?
+]]>
+</sql>
+
+<sql id="getUserOrgList" desc="获取用户机构列表" parameter="index" result="Map">
+<![CDATA[
+select org_id from sys_staff_org where staff_id = ?
+]]>
+</sql>
+
+<sql id="deleteUserOrg" desc="删除用户机构" execute="delete" parameter="template">
+<![CDATA[
+delete from sys_staff_org
+ where staff_id = #staff_id#
+   and org_id in (#db.join(org_list)#)
+]]>
+</sql>
+
+<sql id="getUserListByDeptId" desc="根据部门编号获取用户列表" execute="query" parameter="template" result="Map"> 
+<![CDATA[
+--if(dept_id == "0"){
+select staff.*, '' as dept_name
+  from sys_staff staff
+ where staff.dept_id is null
+ order by staff.dis_order, staff.login_user
+--} else {
+select staff.*, dept.dept_name as dept_name
+  from sys_staff staff, sys_dept dept
+ where staff.dept_id = #dept_id#
+   and staff.dept_id = dept.dept_id(+)
+ order by staff.dis_order, staff.login_user
+--}
+]]>
+</sql>
+
+<sql id="queryUserList" desc="查询用户列表" execute="query" parameter="template" result="Map">
+<![CDATA[
+--var isSuperUser = getUserInfo("super_user");
+--var staffLevel = parseInt(staff_level!9);
+--var gradeId = parseInt(grade_id!0);
+select staff_id, login_user, staff_name, staff_sta, staff_level
+  from sys_staff staff
+--if (gradeId < 4 && !isSuperUser) {
+      ,(select dept_id
+          from sys_dept
+         start with dept_id = #dept_id!-1#
+        connect by prior dept_id = dept_up_id) dept
+--}
+  where grade_id <= #gradeId#
+--if (gradeId < 4 && !isSuperUser) {
+    and staff.dept_id = dept.dept_id
+--}
+--if(staffLevel != 1 && !isSuperUser) {
+    and nvl(staff_level, 9) >= #staff_level!9#
+--	  switch(staffLevel) {
+--		case 1:// 省级
+--		  break;
+--		case 2:// 市级
+    and center_id in (#db.join(center_list!"0")#)
+--		  break;
+--		case 3:// 区县
+	and center_id = #center_id#
+--		  break;
+--		case 4:// 乡镇街道
+	and exists
+	(select 'X'
+	   from sys_staff_org
+	  where staff_id = staff.staff_id
+	    and org_id in
+		(select aaf013 as org_id
+			from af08
+		where aaf013 in (#db.join(street_list!"0")#)
+		union all
+		select aaz070 as org_id from af02 where aaf013 in (#db.join(street_list!"0")#)
+		)
+	)
+--		break;
+--      case 5:// 村组社区
+	and exists (select 'X'
+   from sys_staff_org
+  where staff_id = staff.staff_id
+	and org_id in(#db.join(community_list!"0")#)
+			   )
+--		break;
+--		case 6:// 单位专管员
+	and exists (select 'X'
+   from sys_staff_org
+  where staff_id = staff.staff_id
+    and org_id in(#db.join(corp_list!"0")#)
+				)
+--		break;
+--		default:
+    and 1 = 0
+--		break;
+--	}
+--}
+  order by decode(dis_order, 0, 999990, dis_order), staff_name, login_user
+]]>
+</sql>
+
+<sql id="getOrgTree" desc="获取机构组织树" execute="query" parameter="template" result="Map">
+<![CDATA[
+--var isSuperUser = getUserInfo("super_user");
+--var staffLevel = parseInt(staff_level!9);
+--var gradeId = parseInt(grade_id!0);
+select * from sys_orgs
+--if (staffLevel != 1 && !isSuperUser) {
+--	switch (staffLevel) {
+--	case 1:// 省级
+--		break;
+--	case 2:// 市级
+ where center_id in(#db.join(center_list!"0")#)
+--		break;
+--	case 3:// 区县
+ where center_id = #center_id!"0"#
+--		break;
+--	case 4:// 乡镇街道
+ where (org_type = 2 and org_id in (#db.join(street_list!"0")#)
+    or (org_type = 3 and org_up_id in (#db.join(street_list!"0")#)
+--		break;
+--	case 5:// 村组社区
+ where (org_type = 3 and org_id in (#db.join(community_list!"0")#)
+--		break;
+--	case 6:// 单位专管员
+ where 1 = 0
+--	default:
+ where 1 = 0
+--	}
+--}
+]]>
+</sql>
+
+<sql id="getUserList" desc="获取用户列表" execute="query" parameter="template" result="Map">
+<![CDATA[
+--var isSuperUser = getUserInfo("super_user");
+--var gradeId = parseInt(getUserInfo("grade_id", "0"));
+select t.staff_id,
+       t.login_user,
+       t.staff_name,
+       t.staff_sta,
+       t.staff_type,
+       t.staff_level,
+       (select dept.dept_name
+          from sys_dept dept
+         where dept.dept_id = t.dept_id) as dept_name,
+       (select aaa129 from aa13 where aaa027 = t.center_id) as center_name
+  from sys_staff t
+ where 1 = 1
+--if(gradeId >= 4 || isSuperUser) {
+   and t.dept_id in
+       (select dept.dept_id
+          from sys_dept dept
+         start with dept.dept_up_id = 0
+        connect by prior dept.dept_id = dept.dept_up_id)
+--} else {
+   and t.dept_id in
+       (select dept.dept_id
+          from sys_dept dept
+         start with dept.dept_id = #getUserInfo("dept_id", "-1")#
+        connect by prior dept.dept_id = dept.dept_up_id)
+--}
+--db.addString(aaa027, "t.center_id", "=");
+--db.addString(dep, "t.dept_id", "=");
+--db.addString(staffLevel, "t.staff_level", "=");
+--db.addStringExp(loginUser, "t.login_user");
+--db.addStringExp(userName, "t.staff_name");		
+]]>
+</sql>
+
+<sql id="getUserTreeByDept" desc="根据部门获取用户树" execute="query" parameter="template" result="Map">
+<![CDATA[
+--var isSuperUser = getUserInfo("super_user");
+--var gradeId = parseInt(getUserInfo("grade_id", "0"));
+select dep_staff.*
+  from (select dept.dept_id as dept_id,
+               0 as staff_id,
+               (dept.dept_name) as dept_name,
+               dept.short_name,
+               dept.dept_up_id,
+               dept.dis_order,
+               dept.center_id,
+               dept.valid_flag,
+               to_number(dept.dept_type) as dept_type,
+               '0' as isstaff
+          from sys_dept dept
+        union all
+        select 999999 as dept_id,
+               0 as staff_id,
+               '其他' as dept_name,
+               '其他' as short_name,
+               0 as dept_up_id,
+               999999 as dis_order,
+               null as center_id,
+               '1' as valid_flag,
+               2 as dept_type,
+               '0' as isstaff
+          from dual
+        union all
+        select (0 - staff.staff_id) as dept_id,
+               staff.staff_id,
+               (staff.staff_name || '(' || staff.login_user || ')') as dept_name,
+               staff.staff_name as short_name,
+               nvl(staff.dept_id, 999999) as dept_up_id,
+               (999999 + staff.dis_order) as dis_order,
+               staff.center_id,
+               staff.staff_sta as valid_flag,
+               0 as dept_type,
+               '1' as isstaff
+          from sys_staff staff) dep_staff
+--if(gradeId >= 4 || isSuperUser) {
+ start with dep_staff.dept_up_id = 0
+--} else {
+ start with dep_staff.dept_id = #getUserInfo("dept_id", "-1")#
+--}
+connect by prior dep_staff.dept_id = dep_staff.dept_up_id
+ order siblings by dep_staff.dept_up_id, dep_staff.valid_flag desc, dep_staff.dis_order
+]]>
+</sql>
+
+<!-- ***************************是否使用的mysql数据库   2016-09-09 lingang hygeia_web修改支持mysql数据库************************************************** -->
+
+<sql id="mysql_getUserListByDeptId" desc="根据部门编号获取用户列表" execute="query" parameter="template" result="Map"> 
+<![CDATA[
+--if(dept_id == "0"){
+select staff.*, '' as dept_name
+  from sys_staff staff
+ where staff.dept_id is null
+ order by staff.dis_order, staff.login_user
+--} else {
+select staff.*, dept.dept_name as dept_name
+  from sys_staff staff left join sys_dept dept on staff.dept_id = dept.dept_id
+ where staff.dept_id = #dept_id#
+ order by staff.dis_order, staff.login_user
+--}
+]]>
+</sql>
+
+<sql id="mysql_queryUserList" desc="查询用户列表" execute="query" parameter="template" result="Map">
+<![CDATA[
+--var isSuperUser = getUserInfo("super_user");
+--var staffLevel = parseInt(staff_level!9);
+--var gradeId = parseInt(grade_id!0);
+select staff_id, login_user, staff_name, staff_sta, staff_level
+  from sys_staff staff
+--if (gradeId < 4 && !isSuperUser) {
+      ,(select dept_id from sys_dept where dept_fid like concat ('%-',#dept_id!-1#,'-%')) dept
+--}
+  where grade_id <= #gradeId#
+--if (gradeId < 4 && !isSuperUser) {
+    and staff.dept_id = dept.dept_id
+--}
+--if(staffLevel != 1 && !isSuperUser) {
+    and ifnull(staff_level, 9) >= #staff_level!9#
+--	  switch(staffLevel) {
+--		case 1:// 省级
+--		  break;
+--		case 2:// 市级
+    and center_id in (#db.join(center_list!"0")#)
+--		  break;
+--		case 3:// 区县
+	and center_id = #center_id#
+--		  break;
+--		case 4:// 乡镇街道
+	and exists
+	(select 'X'
+	   from sys_staff_org
+	  where staff_id = staff.staff_id
+	    and org_id in
+		(select aaf013 as org_id
+			from af08
+		where aaf013 in (#db.join(street_list!"0")#)
+		union all
+		select aaz070 as org_id from af02 where aaf013 in (#db.join(street_list!"0")#)
+		)
+	)
+--		break;
+--      case 5:// 村组社区
+	and exists (select 'X'
+   from sys_staff_org
+  where staff_id = staff.staff_id
+	and org_id in(#db.join(community_list!"0")#)
+			   )
+--		break;
+--		case 6:// 单位专管员
+	and exists (select 'X'
+   from sys_staff_org
+  where staff_id = staff.staff_id
+    and org_id in(#db.join(corp_list!"0")#)
+				)
+--		break;
+--		default:
+    and 1 = 0
+--		break;
+--	}
+--}
+  order by decode(dis_order, 0, 999990, dis_order), staff_name, login_user
+]]>
+</sql>
+
+<sql id="mysql_getUserList" desc="获取用户列表" execute="query" parameter="template" result="Map">
+<![CDATA[
+--var isSuperUser = getUserInfo("super_user");
+--var gradeId = parseInt(getUserInfo("grade_id", "0"));
+select t.staff_id,
+       t.login_user,
+       t.staff_name,
+       t.staff_sta,
+       t.staff_type,
+       t.staff_level,
+       (select dept.dept_name
+          from sys_dept dept
+         where dept.dept_id = t.dept_id) as dept_name,
+       (select aaa129 from aa13 where aaa027 = t.center_id) as center_name
+  from sys_staff t
+ where 1 = 1
+--if(gradeId >= 4 || isSuperUser) {
+   and t.dept_id in
+       (SELECT dept_id FROM sys_dept WHERE dept_fid LIKE CONCAT (0,'-%'))
+--} else {
+   and t.dept_id in
+       (select dept_id from sys_dept where dept_fid like concat ('%-',#getUserInfo("dept_id", "-1")#,'-%'))
+--}
+--db.addString(aaa027, "t.center_id", "=");
+--db.addString(dep, "t.dept_id", "=");
+--db.addString(staffLevel, "t.staff_level", "=");
+--db.addStringExp(loginUser, "t.login_user");
+--db.addStringExp(userName, "t.staff_name");		
+]]>
+</sql>
+
+<sql id="mysql_getUserTreeByDept" desc="根据部门获取用户树" execute="query" parameter="template" result="Map">
+<![CDATA[
+--var isSuperUser = getUserInfo("super_user");
+--var gradeId = parseInt(getUserInfo("grade_id", "0"));
+select dep_staff.*
+  from (select dept.dept_id as dept_id,
+               0 as staff_id,
+               (dept.dept_name) as dept_name,
+               dept.short_name,
+               dept.dept_up_id,
+               dept.dis_order,
+               dept.center_id,
+               dept.valid_flag,
+               dept.dept_type as dept_type,
+               '0' as isstaff,
+               dept.dept_fid 
+          from sys_dept dept
+        union all
+        select 999999 as dept_id,
+               0 as staff_id,
+               '其他' as dept_name,
+               '其他' as short_name,
+               0 as dept_up_id,
+               999999 as dis_order,
+               null as center_id,
+               '1' as valid_flag,
+               2 as dept_type,
+               '0' as isstaff,
+               '-0-' as dept_fid 
+          from dual
+        union all
+        select (0 - staff.staff_id) as dept_id,
+               staff.staff_id,
+                CONCAT(staff.staff_name,'(',staff.login_user, ')') AS dept_name,
+               staff.staff_name as short_name,
+               ifnull(staff.dept_id, 999999) as dept_up_id,
+               (999999 + staff.dis_order) as dis_order,
+               staff.center_id,
+               staff.staff_sta as valid_flag,
+               0 as dept_type,
+               '1' as isstaff,
+--if(gradeId >= 4 || isSuperUser) {
+ concat('-','0','-') as dept_fid  from sys_staff staff) dep_staff 
+ WHERE dept_fid LIKE '%-0-%'
+--} else {
+ dept.DEPT_FID AS dept_fid  FROM sys_staff staff,sys_dept dept WHERE staff.DEPT_ID = dept.DEPT_ID) dep_staff 
+ WHERE dept_fid LIKE concat ('%-',#getUserInfo("dept_id", "-1")#,'-%')  
+   AND (short_name !=  '定点医院系统管理员' OR short_name IS NULL)
+--}
+ order by dep_staff.dept_up_id, dep_staff.valid_flag desc, dep_staff.dis_order
+]]>
+<!-- 2077-09-04  暂时没有方法解决移除医院管理员的数据 ，只能写死判断 添加如下-->
+<!-- AND (short_name !=  '定点医院系统管理员' OR short_name IS NULL) -->
+</sql>
+
+<sql id="mysql_getUserGridByDept" desc="根据部门获取用户grid 数据" execute="query" parameter="template" result="Map">
+<![CDATA[
+--var isSuperUser = getUserInfo("super_user");
+--var gradeId = parseInt(getUserInfo("grade_id", "0"));
+select dep_staff.*
+  from (
+         select staff.LOGIN_USER AS login_user, (0 - staff.staff_id) as dept_id,
+               staff.staff_id,
+               dept.dept_name AS dept_name,
+               CONCAT(dept.dept_name,'(',dept.dept_id, ')') AS dept_info,
+               CONCAT(staff.staff_name,'(',staff.login_user, ')') AS staff_info,
+               staff.staff_name as short_name,
+               ifnull(staff.dept_id, 999999) as dept_up_id,
+               (999999 + staff.dis_order) as dis_order,
+               staff.center_id,
+               staff.staff_sta as valid_flag,
+               0 as dept_type,
+               '1' as isstaff,
+ dept.DEPT_FID as dept_fid  from sys_staff staff,sys_dept dept WHERE staff.DEPT_ID = dept.DEPT_ID ) dep_staff 
+--if(gradeId >= 4 || isSuperUser) {
+ WHERE dept_fid LIKE '%-0-%'
+--} else {
+ WHERE dept_fid LIKE concat ('%-',#getUserInfo("dept_id", "-1")#,'-%')  
+	AND (short_name !=  '定点医院系统管理员' OR short_name IS NULL)
+--}
+	AND isstaff = 1
+--if(isNotEmpty(sval)){
+	AND (staff_info LIKE concat ('%',#sval#,'%') or dept_info LIKE concat ('%',#sval#,'%') )  
+--} 
+--if(isNotEmpty(valid_flag)){
+	AND valid_flag = #valid_flag#
+--} 
+ order by dep_staff.dept_up_id, dep_staff.valid_flag desc, dep_staff.dis_order
+]]>
+<!-- 2077-09-04  暂时没有方法解决移除医院管理员的数据 ，只能写死判断 添加如下-->
+<!-- AND (short_name !=  '定点医院系统管理员' OR short_name IS NULL) -->
+</sql>
+
+<!-- sql end -->
+</sqls>

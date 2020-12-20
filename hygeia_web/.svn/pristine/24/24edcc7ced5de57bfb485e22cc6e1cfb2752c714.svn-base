@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<!-- 登录包定义 -->
+	<package name="login" namespace="/login" extends="default">
+		<!-- 通用登录 -->
+		<action name="login" class="com.powersi.sys.login.action.LoginAction"
+			method="login">
+			<param name="userKind">1</param>
+			<param name="loginType">person</param>
+			<result name="success" type="chain">
+				main
+			</result>
+			<result name="input">/pages/login.jsp</result>
+			<result name="desktop">/pages/desktop.jsp</result>
+		</action>
+
+		<!-- 个人用户登录 -->
+		<action name="person" class="com.powersi.sys.login.action.LoginAction"
+			method="login">
+			<param name="userKind">1</param>
+			<param name="loginType">person</param>
+			<result name="success" type="chain">
+				main
+			</result>
+			<result name="input">/pages/login.jsp</result>
+			<result name="desktop">/pages/desktop.jsp</result>
+		</action>
+		
+		<!-- 单位用户登录 -->
+		<action name="corp" class="com.powersi.sys.login.action.LoginAction"
+			method="login">
+			<param name="userKind">2</param>
+			<param name="loginType">corp</param>
+			<result name="success" type="chain">
+				main
+			</result>
+			<result name="input">/pages/login.jsp</result>
+			<result name="desktop">/pages/desktop.jsp</result>
+		</action>
+		 
+		 <!-- 医院用户登录 -->
+		<action name="hosp" class="com.powersi.sys.login.action.LoginAction"
+			method="login">
+			<param name="userKind">3</param>
+			<param name="loginType">hosp</param>
+			<result name="success" type="chain">
+				hospMain
+			</result>
+			<result name="input">/pages/login.jsp</result>
+			<result name="desktop">/pages/desktop.jsp</result>
+		</action>
+		
+		<!-- 管理用户登录 -->
+		<action name="admin" class="com.powersi.sys.login.action.LoginAction"
+			method="login">
+			<param name="userKind">9</param>
+			<param name="loginType">admin</param>
+			<result name="success" type="chain">
+				main
+			</result>
+			<result name="input">/pages/login.jsp</result>
+			<result name="desktop">/pages/desktop.jsp</result>
+		</action>
+
+		<!-- 注销 -->
+		<action name="logout" class="com.powersi.sys.login.action.LoginAction"
+			method="logout">
+			<result name="success" type="chain">
+				person
+			</result>
+			<result name="person" type="chain">
+				person
+			</result>
+			<result name="corp" type="chain">
+				corp
+			</result>
+			<result name="hosp" type="chain">
+				hosp
+			</result>
+			<result name="admin" type="chain">
+				admin
+			</result>
+		</action>
+		
+		<!-- 验证码 -->
+		<action name="verifycode" class="com.powersi.sys.login.action.LoginAction"
+			method="verifyCode">
+			<result type="stream">
+				<param name="contentType">image/jpeg</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		</action>
+	</package>
+</struts>

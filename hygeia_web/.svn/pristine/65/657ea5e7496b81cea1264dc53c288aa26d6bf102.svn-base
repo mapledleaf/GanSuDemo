@@ -1,0 +1,6 @@
+jdbc.driver=net.sf.log4jdbc.DriverSpy
+jdbc.url=jdbc:log4jdbc:mysql://10.137.67.214:3306/hygeia_web?useUnicode=true&characterEncoding=utf8
+jdbc.username=hygeia
+jdbc.password=hygeia
+jdbc.maxpoolsize=1000
+dataSource.failureAfterExit=false

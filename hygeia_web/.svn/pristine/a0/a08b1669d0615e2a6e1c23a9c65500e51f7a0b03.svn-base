@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls xmlns="http://www.powersi.com.cn/schema/sqls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.powersi.com.cn/schema/sqls ../../sqls.xsd">
+
+<!-- sql begin -->
+<sql id="insertChangeDetail" desc="保存系统变更明细" execute="insert">
+	<dao table="SYS_CHANGE_DETAIL" />
+</sql>
+
+<sql id="insertChangeEvent" desc="保存系统变更日志" execute="insert">
+	<dao table="SYS_CHANGE_LOG" not-null="true"/>
+</sql>
+
+<sql id="queryChangeDetail" desc="查询系统变更明细">
+<![CDATA[
+select scl.login_user,
+       scl.user_name,
+       scl.log_id,
+       scl.log_date,
+       scd.item_name,
+       scd.old_value,
+       scd.new_value,
+       scd.item_event_code,
+       decode(scd.item_event_code,
+              '1',
+              '增加',
+              '2',
+              '删除',
+              '3',
+              '更新',
+              '') as item_event,
+       nvl(s.staff_name, scl.login_user) as staff_name
+  from sys_change_log scl, sys_change_detail scd, sys_staff s
+ where scl.log_id = scd.log_id
+   and scl.login_user = s.login_user(+)
+--db.addDatetime(startTime, "scl.log_date", ">=");
+--db.addDatetime(endTime, "scl.log_date", "<=");
+--db.addString(changeType, "scd.item_type", "=");
+--if("0" != eventType){
+--db.addString(eventType, "scd.item_event_code", "=");
+--}
+--db.addStringExp(oldValue, "scd.old_value");
+--db.addStringExp(newValue, "scd.new_value");
+--db.addStringExp(loginUser, "scl.login_user");
+--db.addStringExp(userName, "scl.user_name");
+--db.addStringExp(staffName, "s.staff_name");
+]]>
+</sql>
+
+<!-- ***************************是否使用的mysql数据库   2016-09-09 lingang hygeia_web修改支持mysql数据库************************************************** -->
+
+<sql id="mysql_queryChangeDetail" desc="查询系统变更明细">
+<![CDATA[
+select scl.login_user,
+       scl.user_name,
+       scl.log_id,
+       scl.log_date,
+       scd.item_name,
+       scd.old_value,
+       scd.new_value,
+       scd.item_event_code,
+    case scd.item_event_code
+      when '1' then '增加'
+      when '2' then '删除'
+      when '3' then '更新' end as item_event,
+       ifnull(s.staff_name, scl.login_user) as staff_name
+  from  sys_change_detail scd,sys_change_log scl left join  sys_staff s on scl.login_user = s.login_user
+ where scl.log_id = scd.log_id
+--db.addDatetime(startTime, "scl.log_date", ">=");
+--db.addDatetime(endTime, "scl.log_date", "<=");
+--db.addString(changeType, "scd.item_type", "=");
+--if("0" != eventType){
+--db.addString(eventType, "scd.item_event_code", "=");
+--}
+--db.addStringExp(oldValue, "scd.old_value");
+--db.addStringExp(newValue, "scd.new_value");
+--db.addStringExp(loginUser, "scl.login_user");
+--db.addStringExp(userName, "scl.user_name");
+--db.addStringExp(staffName, "s.staff_name");
+]]>
+</sql>
+
+<!-- sql end -->
+</sqls>

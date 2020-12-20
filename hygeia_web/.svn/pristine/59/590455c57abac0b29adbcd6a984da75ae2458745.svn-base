@@ -1,0 +1,13 @@
+# 20170112 hy delete    zhi qian lei zong de peizhi 
+#redis.host=172.18.100.55
+#redis.port=6379
+#redis.password=powersi@redis
+
+#default
+redis.minIdle=10
+redis.maxIdle=100
+redis.maxTotal=1000
+redis.maxWait=60000
+redis.testOnBorrow=false
+redis.testOnReturn=false
+reids.testWhileIdle=false

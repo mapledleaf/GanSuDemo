@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls xmlns="http://www.powersi.com.cn/schema/sqls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.powersi.com.cn/schema/sqls ../sqls.xsd"
+	default-table="test_dao">
+<!-- sql begin -->
+<sql id="createTable" desc="动态创建表" execute="sqls">
+<![CDATA[
+--if(!hasTable("TEST_DAO")){
+create table TEST_DAO
+(
+  log_sn         VARCHAR2(50) not null,
+  server_name    VARCHAR2(300),
+  log_date       DATE not null,
+  log_level      VARCHAR2(20) not null,
+  log_name       VARCHAR2(500),
+  log_message    CLOB,
+  log_exception  CLOB,
+  login_user     VARCHAR2(50),
+  user_address   VARCHAR2(100),
+  operate_action VARCHAR2(1000),
+  operate_name   VARCHAR2(300),
+  biz_id         VARCHAR2(100),
+  log_blob       BLOB
+);
+comment on table TEST_DAO
+  is '测试DAO表';
+-- //Add comments to the columns 
+comment on column TEST_DAO.log_sn
+  is '日志流水号';
+comment on column TEST_DAO.server_name
+  is '服务器名称';
+comment on column TEST_DAO.log_date
+  is '日志时间';
+comment on column TEST_DAO.log_level
+  is '日志级别';
+comment on column TEST_DAO.log_name
+  is '日志名称';
+comment on column TEST_DAO.log_message
+  is '日志消息';
+comment on column TEST_DAO.log_exception
+  is '日志异常';
+comment on column TEST_DAO.login_user
+  is '登录用户名';
+comment on column TEST_DAO.user_address
+  is '用户地址';
+comment on column TEST_DAO.operate_action
+  is '操作动作';
+comment on column TEST_DAO.operate_name
+  is '操作名称';
+comment on column TEST_DAO.biz_id
+  is '业务编号';
+comment on column TEST_DAO.log_blob
+  is '日志文件';
+
+-- //Create/Recreate indexes 
+create index IDX_TEST_DAO_DATE on TEST_DAO (LOG_DATE);
+
+-- //Create/Recreate primary, unique and foreign key constraints
+alter table TEST_DAO
+  add constraint PK_TEST_DAO primary key (LOG_SN)
+  using index;
+--}
+]]>
+</sql>
+
+<sql id="creatPackageDefine" desc="动态创建包定义" execute="update" parameter="none">
+<![CDATA[
+CREATE OR REPLACE PACKAGE PKG_TEST_DAO IS
+  TYPE RESULTSET IS REF CURSOR;
+
+  PROCEDURE USP_TEST(V_MENUID IN VARCHAR2,
+                     V_LIST   OUT RESULTSET,
+                     V_NUM    OUT NUMBER,
+                     V_STR    OUT VARCHAR2,
+                     V_DATE   OUT DATE,
+                     V_INOUT  IN OUT VARCHAR2);
+END PKG_TEST_DAO;
+]]>
+</sql>
+
+<sql id="creatPackageBody" desc="动态创建包体" execute="update" parameter="none">
+<![CDATA[
+CREATE OR REPLACE PACKAGE BODY PKG_TEST_DAO IS
+  PROCEDURE USP_TEST(V_MENUID IN VARCHAR2,
+                     V_LIST   OUT RESULTSET,
+                     V_NUM    OUT NUMBER,
+                     V_STR    OUT VARCHAR2,
+                     V_DATE   OUT DATE,
+                     V_INOUT  IN OUT VARCHAR2) IS
+  BEGIN
+    OPEN V_LIST FOR
+      SELECT * FROM SYS_MENU WHERE MENU_ID = V_MENUID;
+  
+    V_NUM   := 123456.789;
+    V_STR   := '返回字符串';
+    V_DATE  := SYSDATE;
+    V_INOUT := V_INOUT || '|输入输出测试';
+  
+  END USP_TEST;
+END PKG_TEST_DAO;
+]]>
+</sql>
+
+<sql id="callProc" desc="调用存储过程" execute="call" parameter="none">
+<![CDATA[
+{ CALL PKG_TEST_DAO.USP_TEST(?, ?, ?, ?, ?, ?) }
+]]>
+</sql>
+
+<sql id="closeDebug" desc="测试关闭调试" debug="false" 
+	execute="find" parameter="none" result="int" 
+	remark="某些执行频率高的sql或者数据量大的sql可以关闭调试功能，调试功能只是正常情况下不输出控制台，报错仍然会输出">
+<![CDATA[
+select count(1) from test_dao
+]]>
+</sql>
+
+<sql id="inserIndex" desc="插入索引参数" execute="insert" parameter="index">
+<![CDATA[
+insert into test_dao
+  (log_sn,
+   server_name,
+   log_date,
+   log_level,
+   log_name,
+   log_message,
+   log_exception,
+   login_user,
+   user_address,
+   operate_action,
+   operate_name,
+   biz_id,
+   log_blob)
+values
+  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, empty_blob())
+]]>
+</sql>
+
+<sql id="blobIndex" desc="blob索引参数" execute="blob" parameter="index">
+<![CDATA[
+select log_blob from test_dao where log_sn = ?
+]]>
+</sql>
+
+<sql id="findIndex" desc="find索引参数" execute="find" parameter="index" result="java.sql.Blob">
+<![CDATA[
+select log_blob from test_dao where log_sn = ?
+]]>
+</sql>
+
+<sql id="insertName" desc="插入名称参数" execute="insert" parameter="name">
+<![CDATA[
+insert into test_dao
+  (log_sn,
+   server_name,
+   log_date,
+   log_level,
+   log_name,
+   log_message,
+   log_exception,
+   login_user,
+   user_address,
+   operate_action,
+   operate_name,
+   biz_id,
+   log_blob)
+values
+  (:logSn,
+   :serverName,
+   :logDate,
+   :logLevel,
+   :logName,
+   :logMessage,
+   :logException,
+   :loginUser,
+   :userAddress,
+   :operateAction,
+   :operateName,
+   :bizId,
+   empty_blob())
+]]>
+</sql>
+
+<sql id="blobName" desc="blob名称参数" execute="blob" parameter="name">
+<![CDATA[
+select log_blob from test_dao where log_sn = :log_sn and server_name = :server_name
+]]>
+</sql>
+
+<sql id="findName" desc="find名称参数" execute="find" parameter="name" result="java.sql.Blob">
+<![CDATA[
+select log_blob from test_dao where log_sn = :logSn and server_name = :serverName
+]]>
+</sql>
+
+<sql id="insertTemplate" desc="插入模板参数" execute="insert" remark="不要使用模板做大数据插入，性能差">
+<![CDATA[
+insert into test_dao
+  (log_sn,
+   server_name,
+   log_date,
+   log_level,
+   log_name,
+   log_message,
+   log_exception,
+   login_user,
+   user_address,
+   operate_action,
+   operate_name,
+   biz_id,
+   log_blob)
+values
+  (#logSn#,
+   #serverName#,
+   #logDate#,
+   #logLevel#,
+   #logName#,
+   #logMessage#,
+   #logException#,
+   #loginUser#,
+   #userAddress#,
+   #operateAction#,
+   #operateName#,
+   #bizId#,
+   empty_blob())
+]]>
+</sql>
+
+<sql id="blobTemplate" desc="blob名称参数" execute="blob">
+<![CDATA[
+select log_blob from test_dao where log_sn = #log_sn# and server_name = #server_name#
+]]>
+</sql>
+
+<sql id="findTemplate" desc="find名称参数" execute="find" result="java.sql.Blob">
+<![CDATA[
+select log_blob from test_dao where log_sn = #logSn# and server_name = #serverName#
+]]>
+</sql>
+
+<sql id="queryIndex" desc="query使用索引" execute="query" parameter="index" remark="缺省执行类型是query，缺省结果类型是HashMap">
+<![CDATA[
+select log_sn,
+       server_name,
+       log_date,
+       log_level,
+       log_name,
+       login_user,
+       user_address,
+       operate_action,
+       operate_name,
+       biz_id
+  from test_dao
+ where rownum < ?
+]]>
+</sql>
+
+<sql id="queryName" desc="query使用名称" execute="query" parameter="name" result="String" remark="返回第一列，常用类型可以使用短类名">
+<![CDATA[
+select log_sn, login_user from test_dao where rownum < :rownum
+]]>
+</sql>
+
+<sql id="queryTemplate" desc="query使用模板" execute="query" result="com.powersi.hygeia.framework.entity.SysSystemLog" remark="返回SysSystemLog">
+<![CDATA[
+select * from test_dao where rownum < #rownum#
+]]>
+</sql>
+
+<sql id="countIndex" desc="count使用索引" execute="count" parameter="index">
+<![CDATA[
+select log_sn,
+       server_name,
+       log_date,
+       log_level,
+       log_name,
+       login_user,
+       user_address,
+       operate_action,
+       operate_name,
+       biz_id
+  from test_dao
+ where server_name = ?
+]]>
+</sql>
+
+<sql id="countName" desc="count使用名称" execute="count" parameter="name">
+<![CDATA[
+select 1 from test_dao where server_name = :server_name
+]]>
+</sql>
+
+<sql id="countTemplate" desc="count使用模板" execute="count">
+<![CDATA[
+select 1 from test_dao where server_name = #serverName#
+]]>
+</sql>
+
+<sql id="insertDao" desc="dao插入" execute="insert">
+	<dao table="TEST_DAO" defaults="log_blob:empty_blob()" />
+</sql>
+
+<sql id="insertBatchDao" desc="dao批量插入" execute="insert" remark="使用缺省表名，使用非空插入">
+	<dao defaults="log_blob:empty_blob()" not-null="true" />
+</sql>
+
+<sql id="updateDao" desc="dao更新" execute="update" remark="缺省使用主键更新">
+	<dao />
+</sql>
+
+<sql id="updateBatchDao" desc="dao批量更新" execute="update" remark="使用主键和服务器名称更新">
+	<dao not-null="true" updates="log_level, log_message" wheres="log_sn, server_name" />
+</sql>
+
+<sql id="deleteDao" desc="dao删除" execute="delete" remark="缺省使用主键删除">
+	<dao />
+</sql>
+
+<sql id="deleteBatchDao" desc="dao批量删除" execute="delete" remark="使用主键和服务器名称删除">
+	<dao wheres="log_sn, server_name" />
+</sql>
+
+<sql id="countCodetable" desc="查找码表" execute="count" parameter="index">
+<![CDATA[
+select 1 from sys_code_table where code_type = ?
+]]>
+</sql>
+<sql id="insertCodetable" desc="插入码表" execute="insert">
+	<dao table="sys_code_table" />
+</sql>
+<sql id="countCodetableDetail" desc="查找码表明细" execute="count" parameter="index">
+<![CDATA[
+select 1 from sys_code_table_detail where code_type = ? and data_value = ?
+]]>
+</sql>
+<sql id="insertCodetableDetail" desc="插入码表明细" execute="insert">
+	<dao table="sys_code_table_detail" />
+</sql>
+
+<sql id="codetableMap" desc="码表转换map" execute="query" parameter="index" result="Map">
+<code name="log_level_name" type="test_codetable" data="log_level"/>
+<![CDATA[
+select log_level from test_dao where server_name = ?
+]]>
+</sql>
+
+<sql id="codetableBean" desc="码表转换bean" execute="query" parameter="index" result="com.powersi.hygeia.framework.entity.SysSystemLog">
+<code name="logName" type="test_codetable" data="logLevel"/>
+<![CDATA[
+select * from test_dao where server_name = ? and rownum < 3
+]]>
+</sql>
+
+<sql id="codetableDao" desc="码表转换dao" execute="query" parameter="index" result="Map">
+	<dao wheres="server_name" />
+	<code name="log_level_name1" type="test_codetable" data="log_level"/>
+	<code name="log_level_name2" type="test_codetable" data="log_level"/>
+</sql>
+
+<sql id="pageDisabled" desc="禁用分页测试" execute="query" parameter="index" result="Map">
+<page disabled="true"/>
+<![CDATA[
+select * from test_dao where server_name = ?
+]]>
+</sql>
+
+<sql id="pageSummary" desc="汇总分页测试" execute="query" parameter="index" result="Map">
+<page summary="count(distinct log_level) as level_count, count(server_name) as server_count" />
+<![CDATA[
+select * from test_dao where server_name = ?
+]]>
+</sql>
+
+<sql id="pageCount" desc="计数分页测试" execute="query" parameter="template" result="Map">
+<page count-sql-id="getPageCount"/>
+<![CDATA[
+select * from test_dao where server_name = #server_name#
+]]>
+</sql>
+
+<sql id="getPageCount" desc="获取自定义计数" parameter="template" remark="参数使用主sql的参数(count as cnt)">
+<![CDATA[
+select count(1) as cnt,
+       sum(decode(log_level, 'DEBUG', 1, 'ERROR', 2, 0)) as level_sum,
+       count(server_name) as server_count
+  from test_dao
+ where server_name = #server_name#
+]]>
+</sql>
+
+<!-- sql end -->
+</sqls>

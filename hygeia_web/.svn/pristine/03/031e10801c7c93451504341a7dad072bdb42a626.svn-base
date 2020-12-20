@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+	<!--========================= RESOURCE DEFINITIONS=========================-->
+	<!-- Local DataSource that works in any environment -->
+	<!--
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>oracle.jdbc.driver.OracleDriver</value>
+		</property>
+		<property name="url">
+			<value>jdbc:oracle:thin:@172.18.20.108:1521:orclgbk</value>
+		</property>
+		<property name="username">
+			<value>sips</value>
+		</property>
+		<property name="password">
+			<value>sips</value>
+		</property>
+	</bean>
+	-->
+	
+	<!--JNDI DataSource for J2EE environments -->
+	<!-- 在weblogic环境下使用JNDI，请务必删除WEB-INF/lib下的ojdbc5.jar，使用weblogic自带jdbc驱动 -->
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> 
+		<property name="jndiName"><value>jdbc/pj3x</value></property> 
+	</bean>
+
+	<!-- Connection Pool for Tomcat -->
+	<!--
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName">
+			<value>oracle.jdbc.OracleDriver</value>
+		</property>
+
+		<property name="url">
+			<value>jdbc:oracle:thin:@172.18.20.108:1521:orclgbk</value>
+		</property>
+		<property name="username">
+			<value>sips</value>
+		</property>
+		<property name="password">
+			<value>sips</value>
+		</property>
+		<property name="maxActive">
+			<value>50</value>
+		</property>
+		<property name="initialSize">
+			<value>5</value>
+		</property>
+		<property name="maxWait">
+			<value>6000</value>
+		</property>
+		<property name="maxIdle">
+			<value>20</value>
+		</property>
+		<property name="minIdle">
+			<value>5</value>
+		</property>
+	</bean>
+	 -->
+	
+	<!-- ========================= BUSINESS DEFINITIONS========================= -->
+	<bean id="ParameterParser" class="com.powersi.hygeia.framework.XMLParameterParse"
+		scope="prototype">
+		<property name="parameterObj">
+			<ref local="ParameterObject" />
+		</property>
+	</bean>
+	<bean id="ResultRender" class="com.powersi.hygeia.framework.XMLResultRender"
+		scope="prototype">
+		<property name="resultObj">
+			<ref local="ResultObject" />
+		</property>
+	</bean>
+
+	<bean id="BizPolicyMapping" class="com.powersi.biz.account.DataMapping.BizPolicyMapping"
+		scope="singleton" />
+	<bean id="PolicyDataMapping" class="com.powersi.biz.account.DataMapping.PolicyDataMapping"
+		scope="singleton" />
+	<bean id="AcctRegularMapping" class="com.powersi.biz.account.DataMapping.AcctRegularMapping"
+		scope="singleton" />
+
+	<bean id="ParameterObject" class="com.powersi.hygeia.framework.ParameterObj"
+		scope="prototype" />
+	<bean id="ResultObject" class="com.powersi.hygeia.framework.ResultObj"
+		scope="prototype" />
+
+	<bean id="ActionMapping" class="com.powersi.hygeia.framework.DBActionMapping"
+		scope="singleton" />
+	<bean id="ActionController" class="com.powersi.hygeia.framework.ActionController"
+		scope="singleton">
+		<property name="actionMapping">
+			<ref local="ActionMapping" />
+		</property>
+	</bean>
+	<bean id="CodeTableMapping" class="com.powersi.biz.common.CodeTableMapping"
+		scope="singleton" />
+		
+	<!-- ========================= CAS Authentication DEFINITIONS========================= -->
+	<bean name="AuthenticationFilter" class="com.powersi.sys.web.filter.CasAuthenticationFilter">
+		<property name="casServerLoginUrl" value="${cas.serverurl}/login" />
+		<property name="serverName" value="${cas.serviceurl}" />
+		<property name="renew" value="false" />
+		<property name="gateway" value="false" />
+		<!-- custom property -->
+		<property name="casServerUrlPrefix" value="${cas.serverurl}" />
+		<property name="enabled" value="${cas.enabled}" />
+	</bean>
+
+	<bean name="TicketValidationFilter"
+		class="org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter">
+		<property name="serverName" value="${cas.serviceurl}" />
+		<property name="redirectAfterValidation" value="true" />
+		<property name="useSession" value="true" />
+		<property name="ticketValidator">
+			<bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+				<constructor-arg index="0" value="${cas.serverurl}" />
+			</bean>
+		</property>
+	</bean>
+</beans>

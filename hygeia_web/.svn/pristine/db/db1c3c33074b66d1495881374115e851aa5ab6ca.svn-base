@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                                           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+                                                   http://www.springframework.org/schema/context
+                                                   http://www.springframework.org/schema/context/spring-context-4.1.xsd
+                                                   http://www.springframework.org/schema/jee
+                                                        http://www.springframework.org/schema/jee/spring-jee-4.1.xsd
+                                                        http://www.springframework.org/schema/mvc
+                                                   http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+                                                   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+                                                   http://www.springframework.org/schema/util 
+                                                   http://www.springframework.org/schema/util/spring-util-4.1.xsd                                                 
+                                                   http://www.springframework.org/schema/task 
+                                                   http://www.springframework.org/schema/task/spring-task-4.1.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.powersi" />
+	<!-- 支持task任务扫描注解 -->
+	<task:annotation-driven />
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<!-- 注入properties供spring定义的service使用 -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="order" value="10" />
+		<property name="ignoreUnresolvablePlaceholders" value="false" />
+		<property name="locations">
+			<list>
+				<!-- 默认的在上，项目得在下，下面得最终生效 -->
+				<value>classpath*:conf-default/*.properties</value>
+				<value>classpath*:conf/*.properties</value>
+				<value>file:/app/project/hygeia_web/*.properties</value>
+				<value>file:/Volumes/BOOTCAMP/*.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 注入properties供需要直接读取properties的模块使用 -->
+	<!-- @Autowired private Properties configs; -->
+	<bean id="configs"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<!-- 默认的在上，项目得在下，下面得最终生效 -->
+				<value>classpath*:conf-default/*.properties</value>
+				<value>classpath*:conf/*.properties</value>
+				<value>file:/app/project/hygeia_web/*.properties</value>
+				<value>file:/Volumes/BOOTCAMP/*.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="asynService" class="com.powersi.asyn.spring.AsynServiceFactoryBean">
+		<property name="maxCacheWork" value="9999"/>
+		<property name="workThreadNum" value="128"/>
+	</bean>
+	<bean id="timeTaskSingleKeeper" class="com.powersi.comm.service.timetask.TimeTaskSingleKeeper">
+		<property name="memoryDB" ref="memoryDB" />
+	</bean>
+	<!-- 错误日志编号生成 -->
+	<bean id="errLogSnService" class="com.powersi.log.service.ErrLogSnService">
+		<property name="memoryDB" ref="memoryDB" />
+	</bean>
+</beans>

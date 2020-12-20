@@ -1,0 +1,5 @@
+#session\u8d85\u65f6\u65f6\u95f4
+session.timeout.seconds=1800
+
+#session\u547d\u540d\u7a7a\u95f4(\u6846\u67b6\u9ed8\u8ba4\u4f7f\u7528\u5e94\u7528\u540d)
+session.namespace=

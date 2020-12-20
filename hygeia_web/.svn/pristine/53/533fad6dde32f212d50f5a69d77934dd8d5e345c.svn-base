@@ -1,0 +1,325 @@
+@charset "UTF-8";
+/*主界面*/
+@-ms-viewport {
+	width: auto !important
+}
+
+a:hover, a:focus {
+	text-decoration: none
+}
+
+.layui-nav-child dd {
+	line-height: 32px
+}
+
+.layui-side-scroll {
+	overflow-y: auto
+}
+
+#LAY_app_popupmenu * {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box
+}
+
+#LAY_app_favorite_icon>span {
+	display: none
+}
+
+#LAY_app_favorite_list {
+	overflow-y: auto;
+	min-width: 150px
+}
+
+#LAY_app_popupmessage * {
+	font-size: 14px;
+}
+
+#LAY_app_popupmessage small {
+	font-size: 12px;
+}
+
+#LAY_app_tool_list {
+	text-align: center;
+	min-width: 150px;
+}
+
+#LAY-app-message-dot {
+	top: 4px;
+	left: 36px;
+	margin: 0;
+	display: none;
+}
+
+.layui-layer-adminRight {
+	overflow: visible;
+}
+
+.layui-layer-adminRight .layui-layer-setwin .layui-layer-close2 {
+	right: 0;
+	left: -300px;
+}
+
+.layui-layer-adminMenu .layui-layer-setwin .layui-layer-close2 {
+	right: 0;
+	left: 0px;
+	top: 32px;
+	position: fixed;
+}
+
+.layui-header li .layui-icon-close:hover {
+	border-radius: 50%;
+	background-color: #ff5722;
+	color: #fff;
+}
+
+.layadmin-side-shrink .layui-side, .layadmin-side-shrink .layui-layout-admin .layui-logo
+	{
+	width: 0
+}
+
+.layadmin-side-shrink .layadmin-pagetabs, .layadmin-side-shrink .layui-layout-admin .layui-body,
+	.layadmin-side-shrink .layui-layout-admin .layui-footer,
+	.layadmin-side-shrink .layui-layout-admin .layui-layout-left {
+	left: 0
+}
+
+.layui-layout-admin .layui-layout-left {
+	padding: 0
+}
+
+.layui-layout-admin .layui-layout-left a {
+	padding: 0 20px
+}
+
+.layui-layout-admin .layui-layout-left .layui-nav-item {
+	margin: 0
+}
+
+.layui-layout-admin .layui-logo {
+	padding: 0;
+	color: #fff;
+	color: rgba(255, 255, 255, 0.87);
+	font-size: 14px
+}
+
+.layadmin-side-shrink .layui-side.layui-side-menu .layui-side-scroll ul>li>a span
+	{
+	display: none
+}
+
+.layui-side-menu .layui-nav .layui-nav-child .layui-nav-child .layui-nav-child a
+	{
+	padding-left: 80px
+}
+
+.layui-header .layui-input-search {
+	border: 1px solid #eee;
+	border-color: rgba(170, 180, 190, 0.2);
+	border-radius: 500px !important;
+	padding: 0 0 0 10px
+}
+
+.layadmin-tabs-select {
+	color: #666
+}
+
+.layadmin-tabs-select .layui-form {
+	text-align: left;
+	width: 180px
+}
+
+.layadmin-tabs-select .layui-input {
+	border: 0;
+	text-align: center;
+	color: #666
+}
+
+.pace {
+	-webkit-pointer-events: none;
+	pointer-events: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none
+}
+
+.pace-inactive {
+	display: none;
+}
+
+.pace .pace-progress {
+	background: #009688;
+	position: fixed;
+	z-index: 20180828;
+	top: 0;
+	right: 100%;
+	width: 100%;
+	height: 2px
+}
+
+.menu {
+	padding: 15px;
+}
+
+.menu .input-group {
+	border-bottom: 1px solid #ddd;
+}
+
+.menu .input-group-addon {
+	background-color: transparent;
+	border: 0;
+}
+
+.menu .input-group-addon span {
+	color: #d9d9d9;
+}
+
+.menu .form-control {
+	border: 0;
+	box-shadow: none;
+}
+
+.menu .main {
+	overflow: hidden;
+}
+
+.menu .sidebar {
+	margin-right: -17px;
+	overflow-y: scroll;
+}
+
+.menu .sidebar .item {
+	margin-bottom: 30px;
+}
+
+.menu .sidebar h5.title {
+	margin: 0;
+	line-height: 40px;
+	height: 40px;
+	color: #333;
+	font-size: 16px;
+	padding: 0 10px;
+	font-weight: 600;
+	border-bottom: 0 solid #d9d9d9;
+}
+
+.menu .sidebar ul {
+	list-style: none;
+}
+
+.menu .sidebar ul li {
+	position: relative;
+}
+
+.menu .sidebar ul li:hover span {
+	display: block;
+}
+
+.menu .sidebar ul a {
+	font-size: 14px;
+	color: #000;
+	display: block;
+	line-height: 30px;
+	height: 30px;
+	padding-left: 30px;
+	padding-right: 30px;
+	overflow: hidden;
+	text-decoration: none;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	opacity: .75;
+}
+
+.menu .sidebar ul.gan a {
+	padding-left: 20px;
+}
+
+.menu .sidebar ul.zhi a {
+	padding-left: 40px;
+}
+
+.menu .sidebar ul.ye a {
+	padding-left: 60px;
+}
+
+.menu .sidebar ul a:hover {
+	background-color: rgba(0, 0, 0, 0.06);
+}
+
+.menu .sidebar .cai {
+	cursor: pointer;
+	color: #01AAED;
+}
+
+.menu .sidebar ul span {
+	position: absolute;
+	top: -2px;
+	right: 0;
+	padding: 10px;
+	cursor: pointer;
+	color: #FF5722;
+}
+
+.menu .sidebar ul span.glyphicon-star-empty {
+	display: none;
+}
+
+.menu .sidebar ul span.glyphicon-star {
+	display: block;
+}
+
+.menu .sidebar ul.root>li>a>i {
+	position: absolute;
+	top: 0;
+	left: 10px;
+}
+
+.menu .sidebar ul.gan {
+	display: none;
+	padding-left: 10px;
+}
+
+.menu .sidebar ul.gan .gan-li .zhi {
+	display: none;
+	padding-left: 10px;
+}
+
+.menu .sidebar ul.gan .gan-li .zhi .zhi-li .ye {
+	display: none;
+	padding-left: 10px;
+}
+
+.menu .sidebar ul.gan .gan-li .zhi .zhi-li>a>i {
+	position: absolute;
+	top: 8px;
+	left: 5px;
+}
+
+.menu .sidebar ul.gan .gan-li>a>i {
+	position: absolute;
+	top: 8px;
+	left: 5px;
+}
+
+.menu nav {
+	border-left: 1px solid #ddd;
+	padding-left: 15px;
+}
+
+.menu .nav li {
+	line-height: 36px;
+}
+
+.menu .nav li a {
+	padding: 0;
+	color: #595959;
+}
+
+.menu .nav li a:hover {
+	background-color: transparent;
+	color: #00c1de;
+}
+
+.menu .nav li.active a {
+	color: #00c1de;
+}

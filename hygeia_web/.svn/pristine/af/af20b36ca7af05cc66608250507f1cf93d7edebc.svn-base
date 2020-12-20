@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+"http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+	 <!-- 将action托管给spring -->  
+     <constant name="struts.objectFactory" value="spring"></constant> 
+	<!-- 全局常量 -->
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.locale" value="zh-CN" />
+
+	<constant name="struts.ui.theme" value="webui" />
+	<constant name="struts.custom.i18n.resources" value="messages" />
+	<constant name="struts.multipart.maxSize" value="10737418240" />
+	
+	<!-- 动态方法执行(2.3.16缺省改为false) -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	
+	<!-- struts2安全处理 -->
+	<constant name="struts.additional.excludedPatterns" value="^(action|method):.*"/>
+	<!-- 文件上传安全修复(2.5.x) -->
+	<constant name="struts.multipart.validationRegex" value="^multipart/form-data(; boundary=[0-9a-zA-Z'()+_,\-./:=?]{1,70})?(; charset=[0-9a-zA-Z\-]{1,10})?"/>
+	
+	<!-- 静态内容调度器(增加缓存处理) -->
+    <bean type="org.apache.struts2.dispatcher.StaticContentLoader"
+       class="com.powersi.hygeia.struts2.dispatcher.StrutsStaticContentLoader" name="powersi" />
+    <constant name="struts.staticContentLoader" value="powersi" />
+	 
+	<!-- action注解配置 -->
+	<constant name="struts.convention.result.path" value="/pages/" />
+	<constant name="struts.convention.default.parent.package" value="default" />
+	<constant name="struts.convention.action.mapAllMatches" value="true" />
+	 
+	<!-- 登录包文件 -->
+	<include file="struts-login.xml"></include>
+
+	<!-- 业务包文件 -->
+
+	<!-- 全局定义 -->
+    <package name="struts-global" extends="struts-default">
+       <global-results>
+           <result name="error">/pages/util/error.jsp</result>
+           <result name="input">/pages/util/error.jsp</result>
+           <result name="login">/pages/login.jsp</result>
+           <result name="jumpUrl">${jumpUrl}</result>
+           <result name="jumpChain" type="chain">${jumpUrl}</result>
+       </global-results>
+       <global-allowed-methods>regex:.*</global-allowed-methods>
+    </package>
+    
+	<!-- 缺省包定义，供所有业务包继承 -->
+	<package name="default" extends="struts-global">
+		<interceptors>
+			<interceptor name="baseaction"
+				class="com.powersi.sys.web.interceptor.BaseActionInterceptor_pcloud">
+				<!-- 需要忽略权限检查的url -->
+				<param name="ignoreUrlPattens">
+					/login/.*,/wf.*/.*,/sample/.*
+				</param>
+			</interceptor>
+			<interceptor-stack name="hygeia-interceptor">
+				<interceptor-ref name="baseaction" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="hygeia-interceptor" />
+	</package>
+	
+	<!-- 根目录定义 -->
+	<package name="struts2" extends="default">
+		<!-- 主界面 -->
+		<action name="main" class="com.powersi.sys.login.action.LoginAction"
+			method="main">
+			<result name="success">/pages/main.jsp</result>
+		</action>
+
+		<!-- 主界面 -->
+		<action name="hospMain" class="com.powersi.sys.login.action.LoginAction"
+			method="main">
+			<result name="success">/pages/hosp.jsp</result>
+		</action>
+		
+		<!-- 空action -->
+		<action name="null"></action>
+	</package>
+</struts>

@@ -1,0 +1,14 @@
+/*业务css*/
+@CHARSET "UTF-8";
+
+/*广东本地化*/
+.tdButton, .divButton, .l-dialog-buttons {
+	text-align: right;
+}
+
+.l-dialog-alert .l-dialog-buttons,
+.l-dialog-tip .l-dialog-buttons,
+.l-dialog-confirm .l-dialog-buttons,
+.l-dialog-warning .l-dialog-buttons{
+	text-align: center;
+}

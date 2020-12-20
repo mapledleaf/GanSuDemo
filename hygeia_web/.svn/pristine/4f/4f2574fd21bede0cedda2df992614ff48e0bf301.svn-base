@@ -1,0 +1,50 @@
+<style type="text/css">
+.overflow-auto {overflow: auto;}
+.ui-sortable, .ui-sortable li{margin: 0;}
+#favorite-layout .l-layout-center a:focus,#favorite-layout .l-layout-center a:hover{text-decoration: none;}
+#favorite-list li { cursor: default; line-height: 28px; height: 28px; list-style: none; text-align: left; padding-left: 10px;}
+#favorite-list .ui-draggable-dragging { padding-left: 10px; }
+#favorite-list .ui-state-default { border-bottom: 1px solid #ddd; margin-bottom: 0; position: relative;}
+#favorite-list .ui-state-hover { background: rgb(224, 236, 255);}
+#favorite-list .ui-text{margin-left: 10px; color: rgb(51, 97, 153); }
+
+#favorite-list .icon-minus { position: absolute; right: 10px; top: 7px;}
+#favorite-filter{width: 120px;}
+#favorite-remove-all i{margin-right: 0;}
+#favorite-dialog .modal-footer span{vertical-align: middle;}
+
+.ztree * {font-size: 1em !important;}
+</style>
+<div id="favorite-dialog">
+	<div>
+		<div id="favorite-layout">
+			<div position="left" title="功能菜单树">
+				<div class="overflow-auto">
+					<ul id="favorite-tree" class="ztree"></ul>
+				</div>
+			</div>
+			<div position="center" title='已选择 <span id="favorite-count-dlg">0</span> 项<div class="l-layout-header-toolbar"><a href="javascript:void(0);" id="favorite-remove-all" onclick="clearFavoriteSel()" title="清空全部选择"><i class="fa fa-minus-circle red"></i></a></div>'>
+				<ul class="ui-sortable" id="favorite-list"></ul>
+			</div>
+		</div>
+	</div><!-- /.favorite-body -->
+	<div class="space-y"></div>
+	<div>
+		<div class="row">
+			<div class="col-xs-8 text-left">
+				 <input id="favorite-filter" type="text" class="search" placeholder="搜索菜单" title="输入关键字，按回车键显示符合条件的数据" />
+				 <span class="text-info"><i class="fa fa-info-circle"></i> 按住已选择项上下拖动，可以调整顺序</span>	
+			</div>
+			<div class="col-xs-4 text-right">
+				<button type="button" class="btn btn-xs btn-success" onclick="saveFavorite()" title="保存收藏夹">
+					<i class="icon-ok"></i>
+					确 定
+				</button>
+				<button type="button" class="btn btn-xs btn-default" onclick="closeFavorite()" title="关闭收藏夹">
+					<i class="icon-remove"></i>
+					取 消
+				</button>
+			</div>
+		</div>
+	</div><!-- /.favorite-footer -->
+</div><!-- /.favorite-dialog -->
