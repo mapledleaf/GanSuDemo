@@ -174,9 +174,6 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 	 * @return
 	 */
 	public String applyBack() {
-
-
-
 		try {
 			if (this.isPostRequest()) {
 				try {
