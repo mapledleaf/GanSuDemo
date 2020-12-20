@@ -32,29 +32,30 @@ public abstract class BizHelper implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public static final String getAaa027ByBka501(String bka501) {
-		if (StringUtils.isBlank(bka501)) {
-			return null;
-		}
-		MemoryDB memoryDB = HygeiaBeanService.getInstance().getBeanByClass(MemoryDB.class);
-		//2018-02-07 lhy 代码中写的判断memorydb中是否existKey的，需全部修改为get后判断是否为null来处理。
-		//用existKey会无法从二级缓存中获取，而会到服务器上获取，业务量大了以后会影响性能。
-		/*	if (!memoryDB.existKey(AA13Service.MAP_HYGEIA_BASE_AA13)) {
-			throw new HygeiaException("memoryDB找不到统筹区信息" + AA13Service.MAP_HYGEIA_BASE_AA13);
-		}*/
-		List<AA13DTO> aA13DTORows = (List<AA13DTO>) memoryDB.getList(AA13Service.MAP_HYGEIA_BASE_AA13, 0, -1);
-		if (aA13DTORows == null || aA13DTORows.size() == 0) {
-			throw new HygeiaException("memoryDB找到统筹区信息为空" + AA13Service.MAP_HYGEIA_BASE_AA13);
-		}
-		for (AA13DTO aA13DTORow : aA13DTORows) {
-			if (bka501.equals(aA13DTORow.getBka501())) {
-				if (StringUtils.isNotBlank(aA13DTORow.getAaa027())) {
-					return aA13DTORow.getAaa027();
-				} else {
-					throw new HygeiaException("memoryDB找到所属统筹中心信息为空，统筹区编码：" + bka501);
-				}
-			}
-		}
-		throw new HygeiaException("memoryDB找不到所属统筹中心信息，统筹区编码：" + bka501);
+//		if (StringUtils.isBlank(bka501)) {
+//			return null;
+//		}
+//		MemoryDB memoryDB = HygeiaBeanService.getInstance().getBeanByClass(MemoryDB.class);
+//		//2018-02-07 lhy 代码中写的判断memorydb中是否existKey的，需全部修改为get后判断是否为null来处理。
+//		//用existKey会无法从二级缓存中获取，而会到服务器上获取，业务量大了以后会影响性能。
+//		/*	if (!memoryDB.existKey(AA13Service.MAP_HYGEIA_BASE_AA13)) {
+//			throw new HygeiaException("memoryDB找不到统筹区信息" + AA13Service.MAP_HYGEIA_BASE_AA13);
+//		}*/
+//		List<AA13DTO> aA13DTORows = (List<AA13DTO>) memoryDB.getList(AA13Service.MAP_HYGEIA_BASE_AA13, 0, -1);
+//		if (aA13DTORows == null || aA13DTORows.size() == 0) {
+//			throw new HygeiaException("memoryDB找到统筹区信息为空" + AA13Service.MAP_HYGEIA_BASE_AA13);
+//		}
+//		for (AA13DTO aA13DTORow : aA13DTORows) {
+//			if (bka501.equals(aA13DTORow.getBka501())) {
+//				if (StringUtils.isNotBlank(aA13DTORow.getAaa027())) {
+//					return aA13DTORow.getAaa027();
+//				} else {
+//					throw new HygeiaException("memoryDB找到所属统筹中心信息为空，统筹区编码：" + bka501);
+//				}
+//			}
+//		}
+//		throw new HygeiaException("memoryDB找不到所属统筹中心信息，统筹区编码：" + bka501);
+        return "430399";
 	}
 
 	/**

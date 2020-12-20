@@ -460,9 +460,9 @@ var __customer_service=function(t){  //获取接口服务模块信息
 </script>
  <!--<![endif]-->
  <!--题库答题 start -->
-<script src="<%=path %>/resource/js/answerControl.js" charset="utf-8" type="text/javascript"></script>
+<%--<script src="<%=path %>/resource/js/answerControl.js" charset="utf-8" type="text/javascript"></script>--%>
 <script src="<%=path %>/resource/js/html2canvas.js" charset="utf-8" type="text/javascript"></script>
-<script src="<%=path %>/resource/js/confirmPanel.js" charset="utf-8" type="text/javascript"></script>
+<%--<script src="<%=path %>/resource/js/confirmPanel.js" charset="utf-8" type="text/javascript"></script>--%>
 
 <style type="text/css">
 #LAY_app_answer_shadow{ 

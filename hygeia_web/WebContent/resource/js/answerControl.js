@@ -3,8 +3,8 @@
  */
 /*初始化答题div*/
 $(function() {
-	showAnswerDiv(true);
-	loadQuestion();
+	//showAnswerDiv(true);
+	//loadQuestion();
 });
 
 /* 答题数据对象 */

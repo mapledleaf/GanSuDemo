@@ -327,8 +327,8 @@ function openTaskList(){
 }
 
 $(function() {
-	initBulletin();
-	initTask();
+	//initBulletin();
+	//initTask();
 	//showBulletin();
 });
 </script>

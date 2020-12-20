@@ -18,8 +18,8 @@ let imgName1, imgName2;
  * 派工单、回款单客户确认
  */
 $(function () {
-    loadPromiseForIE();
-    loadConfirmPanel();
+    //loadPromiseForIE();
+    //loadConfirmPanel();
 });
 
 //加载IE对Promise的依赖
