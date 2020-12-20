@@ -1,2 +1,0 @@
-#default
-mongodb.default.url=mongodb://172.18.100.113:27017/webui

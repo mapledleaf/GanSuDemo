@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="hygeia_web:Web exploded">
+    <output-path>$PROJECT_DIR$/../../Servers/apache-tomcat-9.0/webapps_gs</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="hygeia_web/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="hygeia_web" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

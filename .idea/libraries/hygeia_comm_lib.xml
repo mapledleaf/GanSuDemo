@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="hygeia_comm_lib">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/hygeia_comm/libs" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/hygeia_comm/libs" recursive="false" />
+  </library>
+</component>

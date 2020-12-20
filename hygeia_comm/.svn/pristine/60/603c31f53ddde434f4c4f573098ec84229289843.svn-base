@@ -1,5 +1,0 @@
-#if is 1, all rpc service will call local
-pcloud_rpc.debug_mode=1
-pcloud_rpc.debug_endpoint=127.0.0.1:8080
-pcloud_rpc.debug_api=0
-pcloud_rpc.debug_web=0
