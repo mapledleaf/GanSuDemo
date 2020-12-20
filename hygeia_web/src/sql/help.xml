@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<sqls xmlns="http://www.powersi.com.cn/schema/sqls"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.powersi.com.cn/schema/sqls sqls.xsd">
+<!-- sql begin -->
+<sql id="templateHelp" desc="sql模板帮助" remark="2016.4.13最后更新">
+<![CDATA[
+<sqls namespace="" desc="" default-debug="缺省调试标志" default-table="缺省表名" default-data-source="缺省数据源"
+	default-profile="" default-local-id="" default-dialect="">
+
+	<sql id="sql编号" desc="描述 " remark="备注" debug="调试标志" data-source="数据源(dataSource)" 
+		execute="执行类型(query[返回list],find[返回单行或者单列],insert,update,delete,call,count,blob,sqls)"
+		parameter="参数类型(template模板参数,none无参数,index索引参数,name名字参数)"
+		result="结果类型(HashMap,Object[],int,Integer,long,Long,BigDecimal,Entity)">
+		
+		<!--dao操作(存在dao标签则忽略sql模板)-->
+		<dao table="表名" wheres="[条件列名集合 数据库列名$参数名 col_name$prop_name,col2]" updates="[更新列名集合col1,col2]"
+			defaults="{缺省值集合 key$value}" not-null="空值处理true忽略空值 ,false更新空值" />
+	
+		<!--分页操作(只支持执行类型为query)-->
+		<page disabled="是否禁用分页" 
+			summary="汇总列，可以计数的时候汇总统计结果(sum(a), sum(b))" 
+			count-sql-id="计数sql编号(如果sql返回超过一个字段，count字段必须as cnt)" />
+		
+		<!--码表操作(只支持结果类型为map或者entity的)-->
+		<code data="数据列名1" type="码表类型1" name="输出列名1" />
+		<code data="数据列名2" type="码表类型2" name="输出列名2" />
+		<code data="数据列名3" type="码表类型3" name="输出列名3" />
+		
+	sql文本
+	
+	</sql>
+
+</sqls>
+###########################################################################################
+##
+##不要使用模板做大数据插入、更新、删除，性能差，每条数据都要解析，框架为了保证性能，会拿第一条sql做主sql，其他做参数绑定
+##实在需要模板sql的情况下最好如此操作
+##1.用sqlTemplate(sqlId, params[0])生成一个动态使用名称绑定的sql语句，只是拼sql语句
+##2.用dbBatch(PreparedSql ps, List params)
+##
+###########################################################################################
+
+###########################################################################################
+##	参数值使用自动数组Object... values
+##	当使用索引?绑定的时候使用array语法：value1,value2,value3...
+##	当使用参数名或者模板绑定的时候使用map语法：key1,value1,key2,value2,key3,value3...
+##	当使用批量操作的时候使用list语法：list<Object[]> list<Map> list<Entity>
+###########################################################################################
+
+详细介绍请看docs目录下的beetl-guide.pdf和beetlsql.pdf，简单看下即可，
+beetlsql只保留了sql解析，其他sql执行代码删除了，sql执行用dbhelper和daohelper，
+写sql不需要了解那么多复杂应用，下面的例子基本都包括了常用的写法
+
+一.sql模板配置说明 (具体模板文档请参考docs目录下的beetl和beetlsql文档)
+sqls是根节点，必须保留，大部分xml解析器都要求有根节点
+sql节点 id=编号(必填) desc=描述(必填) remark=备注(可选) dataSource=数据源(可选)-->
+sql文本必须使用<![CDATA[sqltext\]\]>包含，避免xml解析出错
+sql文本中使用--符号(sql注释符)，表示java语句，每行都必须加(因为没有结束符)，类似于jsp中<% %>
+sql文本中使用#表达式#符号，表示表达式运算，类似于jsp中${ }
+sql文本中使用了--符号，则表达式不需要输入##符号
+sql文本中注释使用--//或者--/* */
+sql文本中请使用空格代替tab键，保证sql输出对齐
+sql文本中对于变量可以使用安全输出避免空指针异常:变量名!缺省值 比如aaa027!  aaa027!"0"
+
+二.常用函数介绍
+text函数表示直接输出文本，db开头的函数则输出占位符?
+param函数动态获取参赛值，就是通过变量获取参赛值的时候必须使用param函数，否则直接取值是变量值，不是参数值，参数值就是sql调用送进来的对象
+db.use函数可以引入其他sql文本，如果加.分隔可以跨文件引入其他sql文本，否则代表当前包
+db.join函数可以实现in参数数组输出，可以指定参数类型，避免索引因为类型不一致无法使用
+db.like函数可以实现like参数，支持左like，右like，左右like
+db.date函数输出日期 ，时分秒置0-->
+db.timestamp函数输出日期时间
+isEmpty函数表示参数是否为空
+isNotEmpty函数表示参数是否不为空
+
+三.自定义函数
+#param(param_name)
+#param()
+#param("user_name")
+
+#db.use(sqlid)
+#db.use("cols")
+#db.use("sample.cols")
+
+#db.like(param_name, like_mode)
+#like_mode(1:left 2:right)
+#db.like(param_name)
+#db.like(param_name, 1)
+#db.like(param_name, 2)
+
+#db.join(param_name, param_type)
+#param_type(0:string 1:number 2:date 3:timestamp)
+#db.join(param_name)
+#db.join(param_name, 1)
+#db.join(param_name, 2)
+#db.join(param_name, 3)
+
+#db.number(param_name, scale, rounding_mode)
+#rounding_mode see java.math.RoundingMode
+#db.number(param_name)
+#db.number(param_name, 0)
+#db.number(param_name, 4, 4)
+
+#db.date(param_name, date_format)
+#db.date(param_name)
+#db.date(param_name, "yyyyMMdd")
+#db.date(param_name, "yyyy/MM/dd");
+
+#db.timestamp(param_name, date_format)
+#db.timestamp(param_name)
+#db.timestamp(param_name, "yyyyMMdd HH:mm:ss")
+#db.timestamp(param_name, "yyyy/MM/dd");
+
+#db.addString(param_name, column_name, operate_name)
+#operate_name(=, >, <, <=, >=, <>, like, left like,  right like)
+
+#db.addDate(param_name, column_name, operate_name)
+#operate_name(=, >, <, <=, >=, <>)
+
+#db.addDatetime(param_name, column_name, operate_name)
+#operate_name(=, >, <, <=, >=, <>)
+
+#db.addInt(param_name, column_name, operate_name)
+#operate_name(=, >, <, <=, >=, <>)
+
+#db.addLong(param_name, column_name, operate_name)
+#operate_name(=, >, <, <=, >=, <>)
+
+#db.addDatetime(param_name, column_name, operate_name)
+#operate_name(=, >, <, <=, >=, <>)
+
+#db.addStringValues(param_name, column_name, operate_name)
+#operate_name(in, not in)
+
+#db.addIntValues(param_name, column_name, operate_name)
+#operate_name(in, not in)
+
+#db.addStringExp(param_name, column_name)
+
+#getUserInfo(param_name, default_value)
+#getUserInfo()
+#getUserInfo("user_id")
+#getUserInfo("user_kind", "9")
+
+#getTableCols(table_name)
+#getTableCols("sys_user")
+
+#getBeanProps(prop_name)
+#getBeanProps()
+#getBeanProps("userId")
+
+#getColName(prop_name)
+#getColName("userId")
+
+#getPropName(column_name)
+#getPropName("user_id")
+
+#hasTable(table_name)
+#hasTable("sys_user")
+
+#hasColumn(table_name, column_name)
+#hasColumn("sys_user", "user_id")
+]]>
+</sql>
+
+<!-- sql end -->
+</sqls>

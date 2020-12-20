@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                                           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+                                                   http://www.springframework.org/schema/context
+                                                   http://www.springframework.org/schema/context/spring-context-4.1.xsd
+                                                   http://www.springframework.org/schema/jee
+                                                        http://www.springframework.org/schema/jee/spring-jee-4.1.xsd
+                                                        http://www.springframework.org/schema/mvc
+                                                   http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+                                                   http://www.springframework.org/schema/util 
+                                                   http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+	
+	<!--Hygeia_web里面使用远程服务，申报-->
+	<bean id="declarePayService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/declarePayService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.declare.service.api.DeclarePayService"></property>
+	</bean>
+
+	
+	<!--Hygeia_web里面使用远程服务，业务查询 -->
+	<bean id="bizQueryApiService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/bizQueryApiService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.query.service.api.BizQueryApiService"></property>
+	</bean>
+	
+	<!--Hygeia_web里面使用远程服务，异地就医 -->
+	<bean id="outBizApiService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/outBizApiService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.outland.service.api.OutBizApiService"></property>
+	</bean>
+	
+	<!--Hygeia_web里面使用远程服务，跨省异地医院确认结算 -->
+	<bean id="outDeclService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/outDeclService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.outland.service.api.OutDeclService"></property>
+	</bean>
+	
+	<!--Hygeia_web里面使用远程服务，跨省异地住院日对账 -->
+	<bean id="outAccountBizApiService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/outAccountBizApiService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.outland.service.api.OutAccountBizApiService"></property>
+	</bean>
+	
+	<!--Hygeia_web里面使用远程服务，生育业务 -->
+<!-- 	<bean id="taApiService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/taApiService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.procreate.service.api.TreatmentApprobateApiService"></property>
+	</bean> -->
+	
+	<!--Hygeia_web里面使用远程服务，两病三师团队备案vs自费补偿申请 -->
+	<bean id="teamVsSelfPayApplyService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/teamVsSelfPayApplyService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.special.service.TeamVsSelfPayApplyService"></property>
+	</bean>
+	
+	<!-- Hygeia远程服务 台账查询 --> 
+	<bean id="queryAccountApiService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/queryAccountApiService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.queryAccount.service.api.QueryAccountApiService"></property>
+	</bean>
+	
+	<!-- Hygeia远程服务 生育备案--> 
+	<bean id="treatmentRegisterService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/treatmentRegisterService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.maternity.treatmentregister.service.TreatmentRegisterService"></property>
+	</bean>
+	
+</beans>

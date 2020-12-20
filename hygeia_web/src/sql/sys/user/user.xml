@@ -1,0 +1,782 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls xmlns="http://www.powersi.com.cn/schema/sqls"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.powersi.com.cn/schema/sqls ../../sqls.xsd"
+	default-table="SYS_USER">
+
+	<sql id="getRoleMenus" desc="查询角色菜单">
+<![CDATA[
+select menu.menu_id,
+       menu.menu_up_id,
+       menu.menu_name,
+       menu.win_name   as menu_url,
+       menu.win_name   as url,
+       menu.pic_name,
+       menu.menu_order as dis_order
+  from sys_menu menu
+ where menu.valid_flag = '1'
+   and menu.menu_type = '1'
+   and (menu.right_flag = '0' or
+       (menu.right_flag = '1' and exists
+        (select 'x'
+            from sys_role_menus
+           where sys_role_menus.role_id in (#db.join(role_id)#)
+             and sys_role_menus.menu_id = menu.menu_id)) or
+       (menu.right_flag = '2' and exists
+        (select 'x'
+            from sys_role_menus
+           where sys_role_menus.role_id in (#db.join(role_id)#)
+             and sys_role_menus.menu_id = uf_menu_right(menu.menu_id))))
+ order by menu.menu_order
+]]>
+	</sql>
+
+	<sql id="updatePasswordErrorCount" desc="更新密码错误次数" execute="update">
+<![CDATA[
+update sys_user
+--if(pwd_flag) {
+   set password_errorcount = 0
+--} else {
+	set password_errorcount = password_errorcount + 1
+--}
+ where user_id = #user_id#
+   and user_kind = #user_kind#
+]]>
+	</sql>
+
+	<sql id="changePassword" desc="更改密码" execute="update"
+		parameter="index">
+<![CDATA[
+update sys_user
+   set password = ?
+ where user_id = ?
+   and user_kind = ?
+]]>
+	</sql>
+
+	<sql id="confirmUserExist" desc="确认用户是否存在" execute="find"
+		parameter="index" result="int">
+<![CDATA[
+select count(1) from sys_user where user_id = ? and user_kind = ?
+]]>
+	</sql>
+
+	<sql id="insertUser" desc="插入用户" execute="insert">
+		<dao not-null="true" />
+	</sql>
+
+	<sql id="lockUser" desc="锁定用户" execute="update" parameter="index">
+<![CDATA[
+update sys_user
+   set lock_state = '1', lock_time = sysdate, lock_reason = ?
+ where user_id = ?
+   and user_kind = ?
+]]>
+	</sql>
+
+	<sql id="unlockUser" desc="解锁用户" execute="update" parameter="index">
+<![CDATA[
+update sys_user
+   set lock_state          = '0',
+       lock_time           = null,
+       lock_reason         = '',
+       password_errorcount = 0
+ where user_id = ?
+   and user_kind = ?
+]]>
+	</sql>
+
+	<sql id="resetPassword" desc="重置密码" execute="update"
+		parameter="index">
+<![CDATA[
+update sys_user
+   set password_errorcount = 0, password = null
+ where user_id = ?
+   and user_kind = ?
+]]>
+	</sql>
+
+	<sql id="clearPasswordError" desc="清除密码错误" execute="update"
+		parameter="index">
+<![CDATA[
+update sys_user
+   set password_errorcount = 0
+ where user_id = ?
+   and user_kind = ?
+]]>
+	</sql>
+
+	<sql id="getUserByLoginUser" desc="通过登录名获取用户" execute="find"
+		result="Map">
+<![CDATA[
+#sys_user_kind.login_sql#
+]]>
+	</sql>
+
+	<sql id="getUserByUserId" desc="通过用户编号获取用户" execute="find"
+		result="Map">
+<![CDATA[
+#sys_user_kind.find_sql#
+]]>
+	</sql>
+
+	<sql id="queryUserList" desc="查询用户列表" execute="query" result="Map">
+<![CDATA[
+#sys_user_kind.query_sql#
+]]>
+	</sql>
+
+	<sql id="filterQueryUser" desc="过滤用户查询">
+<![CDATA[
+--  var isSuperUser = getUserInfo("super_user");
+--	var staffLevel = parseInt(getUserInfo("staff_level", "9"));
+  and usertab.grade_id <= :grade_id
+--if (staffLevel != "1" && !isSuperUser) {
+  and nvl(usertab.staff_level, 9) >= :staff_level
+--	switch (staffLevel) {
+--	case 0:// 无级别
+--		break;
+--	case 1:// 省级
+--		break;
+--	case 2:// 市级
+  and usertab.center_id in (#text(center_list!"0")#)
+--		break;
+--	case 3:// 区县
+  and usertab.center_id = :center_id
+--		break;
+--	case 4:// 乡镇街道
+  and exists (
+     select 'X'
+      from sys_staff_org
+     where staff_id = usertab.staff_id
+       and org_id in (select aaf013 as org_id from af08 where aaf013 in (#text(street_list!"0")#)
+     union all
+     select aaz070 as org_id from af02 where aaf013 in (#text(street_list!"0")#)
+		)
+	)
+--		break;
+--	case 5:// 村组社区
+  and exists (select 'X'
+	from sys_staff_org
+   where staff_id = usertab.staff_id
+	 and org_id in (#text(community_list!"0")#)
+	 )
+--		break;
+--	case 6:// 单位专管员
+   and exists (select 'X'
+    from sys_staff_org
+   where staff_id = usertab.staff_id
+     and org_id in (#text(corp_id!"0")#)
+--		break;
+--	default:
+   and 1 = 0;
+--		break;
+--	}
+--}
+]]>
+	</sql>
+
+	<sql id="queryOrgList" desc="查询机构列表">
+<![CDATA[
+--if (user_kind == "2") {
+select *
+  from (select corp_id   as org_id,
+               corp_code as org_code,
+               corp_name as org_name
+          from sys_corps
+         order by corp_code)
+ where 1 = 1
+--} else if (user_kind == "3") {
+select *
+  from (select hospital_id   as org_id,
+               hospital_id   as org_code,
+               hospital_name as org_name
+          from sys_hospital
+         order by hospital_id)
+ where 1 = 1
+--} else if (user_kind == "8") {
+--  var isSuperUser = getUserInfo("super_user");
+--	var staffLevel = parseInt(getUserInfo("staff_level", "9"));
+select * from sys_orgs
+--	if (!isSuperUser) {
+--		switch (staffLevel) {
+--		case 1:// 省级
+  where 1 = 1
+--			break;
+--		case 2:// 市级
+  where center_id in (#db.join(getUserInfo("center_list", "0"))#)
+--			break;
+--		case 3:// 区县
+  where center_id = #getUserInfo("center_id", "0")#
+--			break;
+--		case 4:// 乡镇街道
+  where (org_type = 2 and org_id in (#db.join(getUserInfo("street_list", "0"))#)
+     or (org_type = 3 and org_up_id in (#db.join(getUserInfo("street_list", "0"))#))
+--			break;
+--		case 5:// 村组社区
+  where (org_type = 3 and org_id in (#db.join(getUserInfo("community_list", "0"))#))
+--			break;
+--		case 6:// 单位专管员
+  where 1 = 0
+--		default:
+  where 1 = 0
+--		}
+--	} else {
+  where 1 = 1
+--	}
+--db.addString(center_id, "center_id", "=");
+--db.addInt(org_level, "org_level", "=");
+--} else {
+   and 1 = 0
+--}
+--db.addStringExp(org_code, "org_code");
+--db.addStringExp(org_name, "org_name");
+]]>
+	</sql>
+
+	<sql id="getConfig" desc="获取用户配置" execute="query" parameter="index"
+		result="Object[]">
+<![CDATA[
+select config_code, config_value
+  from sys_user_config
+ where user_id = ?
+   and user_kind = ?
+]]>
+	</sql>
+
+	<sql id="findConfig" desc="查找用户配置" execute="find" parameter="index"
+		result="String">
+<![CDATA[
+select config_value
+  from sys_user_config
+ where user_id = ?
+   and user_kind = ?
+   and config_code = ?
+]]>
+	</sql>
+
+	<sql id="saveConfig" desc="保存用户配置" execute="update"
+		parameter="name">
+<![CDATA[
+merge into sys_user_config
+using (select 'X' from dual) d
+on (user_id = :user_id and user_kind = :user_kind and config_code = :config_code)
+when matched then
+  update set config_value = :config_value
+when not matched then
+  insert
+    (user_id, user_kind, config_code, config_value)
+  values
+    (:user_id, :user_kind, :config_code, :config_value)
+]]>
+	</sql>
+
+	<sql id="queryUserInfoList" desc="查询用户信息列表">
+<![CDATA[
+select user_id,
+       user_kind,
+       login_user,
+       user_name,
+       org_id,
+       org_name,
+       user_sta
+  from sys_user_info
+ where valid_flag = '1'
+   and user_kind = #user_kind#
+   and user_kind <= #getUserInfo("user_kind", "0")#
+--if (user_kind == "8") {
+--	var user = getUserInfo();
+--  var isSuperUser = getUserInfo("super_user");
+--	var staffLevel = parseInt(getUserInfo("staff_level", "9"));
+--	if (staffLevel != 1 && !isSuperUser) {
+--		switch (staffLevel) {
+--		case 1:// 省级
+--			break;
+--		case 2:// 市级
+   and center_id in(#db.join(user.center_list!"0")#)
+--			break;
+--		case 3:// 区县
+   and center_id = #user.center_id!"0"#
+--			break;
+--		case 4:// 乡镇街道
+   and (org_type = 2 and org_id in (#db.join(user.street_list!"0")#)
+    or  org_type = 3 and org_up_id in (#db.join(user.street_list!"0")#))
+--			break;    
+--		case 5:// 村组社区
+   and (org_type = 3 and org_id in (#db.join(user.community_list!"0")#)
+--			break;
+--		case 6:// 单位专管员
+   and 1 = 0
+--			break; 
+		default:
+   and 1 = 0
+--			break;
+--		}
+--	}
+--}
+--db.addStringExp(login_user, "login_user");
+--db.addStringExp(user_name, "user_name");
+--db.addStringExp(org_name, "org_name");
+  order by login_user
+]]>
+	</sql>
+
+	<sql id="getUserRoleIdList" desc="查询用户角色列表" execute="query"
+		parameter="index" result="String">
+<![CDATA[
+select role_id
+  from sys_user_role
+ where user_kind = ?
+   and user_id = ?
+]]>
+	</sql>
+
+	<sql id="getUserOrgList" desc="查询用户机构列表" execute="query"
+		parameter="index" result="Map">
+<![CDATA[
+select *
+  from sys_user_org
+ where user_kind = ?
+   and user_id = ?
+]]>
+	</sql>
+
+	<sql id="getUserInfo" desc="获取用户信息" execute="find"
+		parameter="index" result="Map">
+<![CDATA[
+select *
+  from sys_user_info
+ where user_kind = ?
+   and user_id = ?
+   and valid_flag = '1'
+]]>
+	</sql>
+
+	<sql id="checkLoginUserRepeate" desc="检查用户名是否重复" execute="find"
+		parameter="index" result="int">
+<![CDATA[
+select count(1)
+  from sys_user_info
+ where user_kind = ?
+   and login_user = ?
+   and user_id <> ?
+]]>
+	</sql>
+
+	<sql id="insertUserInfo" desc="插入用户信息" execute="insert">
+		<dao table="SYS_USER_INFO" />
+	</sql>
+
+	<sql id="updateUserInfo" desc="更新用户信息" execute="update">
+		<dao table="SYS_USER_INFO" wheres="user_kind,user_id" />
+	</sql>
+
+	<sql id="deleteUserInfo" desc="删除用户信息" execute="delete"
+		parameter="index">
+<![CDATA[
+update sys_user_info
+   set login_user = login_user || '_delete', valid_flag = '0'
+ where user_kind = ?
+   and user_id = ?
+   and valid_flag = '1'
+]]>
+	</sql>
+
+	<sql id="insertUserOrg" desc="插入用户机构" execute="insert">
+		<dao table="SYS_USER_ORG" />
+	</sql>
+
+	<sql id="deleteUserOrg" desc="删除用户机构" execute="delete"
+		parameter="index">
+<![CDATA[
+delete from sys_user_org
+ where user_kind = ?
+   and user_id = ?
+]]>
+	</sql>
+
+	<sql id="queryUserKind" desc="查询用户类别">
+<![CDATA[
+select t.*,
+       t.user_kind as id,
+       m.menu_name as menu_name,
+       r.role_name as role_name
+  from sys_user_kind t, sys_menu m, sys_roles r
+ where t.start_menu = m.menu_id(+)
+   and t.role_id = r.role_id(+)
+--for(col in getTableCols("SYS_USER_KIND")){
+--	if(isNotEmpty(param(col))){
+--		if(col == "valid_flag") {
+--			db.addStringValues(param(col), "t.valid_flag");
+--		} else {
+--			db.addStringExp(param(col), "t." + col);
+--		}
+--	}
+--}
+ order by t.dis_order
+]]>
+	</sql>
+
+	<sql id="keysUserKind" desc="获取全部用户类别" execute="query"
+		parameter="none" result="Object">
+<![CDATA[
+select user_kind from sys_user_kind
+]]>
+	</sql>
+
+	<sql id="saveUserKind" desc="保存用户类别" execute="update">
+		<dao table="SYS_USER_KIND" wheres="user_kind$id" />
+	</sql>
+
+	<sql id="insertUserKind" desc="插入用户类别" execute="insert">
+		<dao table="SYS_USER_KIND" />
+	</sql>
+
+	<sql id="queryAddressList" desc="查询用户通讯录">
+<![CDATA[
+select *
+  from (select user_id,
+               user_kind,
+               login_user,
+               user_name,
+               grade_id,
+               user_type,
+               user_level,
+               user_sta,
+               center_id,
+               org_id,
+               org_name,
+               dis_order,
+               sex,
+               idcardno,
+               birthdate,
+               nationality,
+               position,
+               position_desc,
+               address,
+               postal_code,
+               mobile_phone,
+               home_phone,
+               office_phone,
+               fax,
+               email,
+               qq,
+               msn,
+               remark
+          from sys_user_info
+         where valid_flag = '1'
+        union all
+        select a.staff_id as user_id,
+               9 as user_kind,
+               a.login_user,
+               a.staff_name as user_name,
+               a.grade_id,
+               a.staff_type as user_type,
+               a.staff_level as user_level,
+               a.staff_sta as user_sta,
+               a.center_id,
+               to_char(a.dept_id) as org_id,
+               b.dept_name as org_name,
+               a.dis_order,
+               a.sex,
+               a.idcardno,
+               a.birthdate,
+               a.nationality,
+               a.position,
+               a.position_desc,
+               a.address,
+               a.postal_code,
+               a.mobile_phone,
+               a.home_phone,
+               a.office_phone,
+               a.fax,
+               a.email,
+               a.qq,
+               a.msn,
+               a.remark
+          from sys_staff a, sys_dept b
+         where a.dept_id = b.dept_id(+)
+           and a.is_developer = '0')
+ where 1 = 1
+--for(col in getTableCols("SYS_USER_INFO")){
+--	if(isNotEmpty(param(col))){
+--		if(col == "user_kind") {
+--			db.addIntValues(param(col), col);
+--		} else {
+--			db.addStringExp(param(col), col);
+--		}
+--	}
+--}
+ order by user_kind desc, user_name
+]]>
+	</sql>
+
+	<sql id="queryCorpUserPay" desc="查询单位缴费用户" execute="find"
+		parameter="index" result="Map">
+<![CDATA[
+select * from sys_corp_charge where corp_id = ?
+]]>
+	</sql>
+
+	<sql id="queryPersonUser" desc="查询个人用户" execute="find"
+		parameter="index" result="Map">
+<![CDATA[
+select * from ac01 where aac002 = ?
+]]>
+	</sql>
+
+	<sql id="updateRetrieveQuestion" desc="更新人员密保问题" execute="update">
+		<dao table="sys_user_retrieve" />
+	</sql>
+
+	<sql id="getRetrieveQuestion" desc="获取人员密保问题" execute="find"
+		parameter="index" result="com.powersi.sys.user.dto.PwdRetrieveDTO">
+<![CDATA[
+select * from sys_pwd_retrieve where person_id = ?
+]]>
+	</sql>
+
+	<sql id="saveRetrieveQuestion" desc="保存人员密保问题" execute="insert">
+		<dao table="sys_user_retrieve" />
+	</sql>
+
+	<!-- ***************************是否使用的mysql数据库 2016-09-09 lingang hygeia_web修改支持mysql数据库************************************************** -->
+
+
+	<sql id="mysql_getRoleMenus" desc="查询角色菜单">
+<![CDATA[
+SELECT menu_id,
+	menu_up_id,
+	menu_name,
+	menu_url,
+	url,
+	pic_name,
+	dis_order FROM (
+SELECT  
+	menu.menu_id,
+	menu.menu_up_id,
+	menu.menu_name,
+	menu.win_name   AS menu_url,
+	menu.win_name   AS url,
+	menu.pic_name,
+	menu.menu_order AS dis_order
+FROM sys_menu menu 
+WHERE menu.valid_flag = '1'
+	AND menu.menu_type = '1'
+	AND menu.right_flag = '0'
+UNION ALL
+SELECT  
+	menu.menu_id,
+	menu.menu_up_id,
+	menu.menu_name,
+	menu.win_name   AS menu_url,
+	menu.win_name   AS url,
+	menu.pic_name,
+	menu.menu_order AS dis_order
+FROM sys_role_menus srm ,sys_menu menu 
+WHERE menu.MENU_ID = srm.MENU_ID
+	AND menu.valid_flag = '1'
+	AND menu.menu_type = '1'
+	AND srm.ROLE_ID IN (#db.join(role_id)#)
+	AND menu.right_flag IN ('1')
+UNION ALL
+SELECT 
+	menu.menu_id,
+	menu.menu_up_id,
+	menu.menu_name,
+	menu.win_name   AS menu_url,
+	menu.win_name   AS url,
+	menu.pic_name,
+	menu.menu_order AS dis_order
+FROM sys_menu menu ,sys_role_menus srm
+WHERE srm.ROLE_ID IN (#db.join(role_id)#)
+AND menu.right_flag IN ('2')
+AND menu.valid_flag = '1'
+AND menu.menu_type = '1'
+AND menu.menu_fid LIKE CONCAT('%-',srm.menu_id,'-%')
+GROUP BY menu.menu_id
+) a GROUP BY menu_id,
+	menu_up_id,
+	menu_name,
+	menu_url,
+	url,
+	pic_name,
+	dis_order
+order by dis_order
+
+]]>
+	</sql>
+
+	<sql id="mysql_filterQueryUser" desc="过滤用户查询">
+<![CDATA[
+--  var isSuperUser = getUserInfo("super_user");
+--	var staffLevel = parseInt(getUserInfo("staff_level", "9"));
+  and usertab.grade_id <= :grade_id
+--if (staffLevel != "1" && !isSuperUser) {
+  and IFNULL(usertab.staff_level, 9) >= :staff_level
+--	switch (staffLevel) {
+--	case 0:// 无级别
+--		break;
+--	case 1:// 省级
+--		break;
+--	case 2:// 市级
+  and usertab.center_id in (#text(center_list!"0")#)
+--		break;
+--	case 3:// 区县
+  and usertab.center_id = :center_id
+--		break;
+--	case 4:// 乡镇街道
+  and exists (
+     select 'X'
+      from sys_staff_org
+     where staff_id = usertab.staff_id
+       and org_id in (select aaf013 as org_id from af08 where aaf013 in (#text(street_list!"0")#)
+     union all
+     select aaz070 as org_id from af02 where aaf013 in (#text(street_list!"0")#)
+		)
+	)
+--		break;
+--	case 5:// 村组社区
+  and exists (select 'X'
+	from sys_staff_org
+   where staff_id = usertab.staff_id
+	 and org_id in (#text(community_list!"0")#)
+	 )
+--		break;
+--	case 6:// 单位专管员
+   and exists (select 'X'
+    from sys_staff_org
+   where staff_id = usertab.staff_id
+     and org_id in (#text(corp_id!"0")#)
+--		break;
+--	default:
+   and 1 = 0
+--		break;
+--	}
+--}
+]]>
+	</sql>
+
+	<sql id="mysql_deleteUserInfo" desc="删除用户信息" execute="delete"
+		parameter="index">
+<![CDATA[
+update sys_user_info
+   set login_user = concat(login_user,'_delete'), valid_flag = '0'
+ where user_kind = ?
+   and user_id = ?
+   and valid_flag = '1'
+]]>
+	</sql>
+
+	<sql id="mysql_queryUserKind" desc="查询用户类别">
+<![CDATA[
+SELECT t.*,
+       t.user_kind AS id,
+       m.menu_name AS menu_name,
+       r.role_name AS role_name
+  FROM sys_user_kind t LEFT JOIN  sys_menu m ON t.start_menu = m.menu_id , sys_user_kind t2 LEFT JOIN sys_roles r ON t2.role_id = r.role_id
+ WHERE t.user_kind = t2.user_kind
+--for(col in getTableCols("SYS_USER_KIND")){
+--	if(isNotEmpty(param(col))){
+--		if(col == "valid_flag") {
+--			db.addStringValues(param(col), "t.valid_flag");
+--		} else {
+--			db.addStringExp(param(col), "t." + col);
+--		}
+--	}
+--}
+ order by t.dis_order
+]]>
+	</sql>
+
+	<sql id="mysql_queryAddressList" desc="查询用户通讯录">
+<![CDATA[
+select *
+  from (select user_id,
+               user_kind,
+               login_user,
+               user_name,
+               grade_id,
+               user_type,
+               user_level,
+               user_sta,
+               center_id,
+               org_id,
+               org_name,
+               dis_order,
+               sex,
+               idcardno,
+               birthdate,
+               nationality,
+               position,
+               position_desc,
+               address,
+               postal_code,
+               mobile_phone,
+               home_phone,
+               office_phone,
+               fax,
+               email,
+               qq,
+               msn,
+               remark
+          from sys_user_info
+         where valid_flag = '1'
+        union all
+        select a.staff_id as user_id,
+               9 as user_kind,
+               a.login_user,
+               a.staff_name as user_name,
+               a.grade_id,
+               a.staff_type as user_type,
+               a.staff_level as user_level,
+               a.staff_sta as user_sta,
+               a.center_id,
+               a.dept_id as org_id,
+               b.dept_name as org_name,
+               a.dis_order,
+               a.sex,
+               a.idcardno,
+               a.birthdate,
+               a.nationality,
+               a.position,
+               a.position_desc,
+               a.address,
+               a.postal_code,
+               a.mobile_phone,
+               a.home_phone,
+               a.office_phone,
+               a.fax,
+               a.email,
+               a.qq,
+               a.msn,
+               a.remark
+          from sys_staff a, sys_dept b
+         where a.dept_id = b.dept_id(+)
+           and a.is_developer = '0')
+ where 1 = 1
+--for(col in getTableCols("SYS_USER_INFO")){
+--	if(isNotEmpty(param(col))){
+--		if(col == "user_kind") {
+--			db.addIntValues(param(col), col);
+--		} else {
+--			db.addStringExp(param(col), col);
+--		}
+--	}
+--}
+ order by user_kind desc, user_name
+]]>
+	</sql>
+
+	<sql id="mysql_lockUser" desc="锁定用户" execute="update"
+		parameter="index">
+<![CDATA[
+update sys_user
+   set lock_state = '1', lock_time = sysdate(), lock_reason = ?
+ where user_id = ?
+   and user_kind = ?
+]]>
+	</sql>
+
+	<!-- sql end -->
+</sqls>

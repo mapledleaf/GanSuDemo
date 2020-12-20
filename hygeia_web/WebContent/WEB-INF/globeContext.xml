@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>PowerSI配置文件(开发环境)</comment>
+
+	<!-- 日志调试级别 (已经废弃，改用log4j属性文件配置) -->
+	<entry key="log_level">100</entry>
+
+	<!-- 数据库连接跟踪标志 (0关闭 1打开) 发现存在未关闭连接，只记录日志不强行关闭 -->
+	<entry key="trace_dbconn">0</entry>
+
+	<!-- 业务连接跟踪标志 (0关闭 1打开 本机调试强制为1 运行模式根据需要定义) 发现存在未关闭连接，在回滚事务后关闭连接，并记录日志 -->
+	<entry key="trace_busiconn">1</entry>
+
+	<!-- 任务调度器标志(0关闭 1打开) -->
+	<entry key="scheduler_flag">0</entry>
+
+	<!-- 公司名称 -->
+	<entry key="companyname">创智和宇</entry>
+
+	<!-- 序列号表名 -->
+	<entry key="serial_table">sys_serial</entry>
+
+	<!-- 核心平台版本 -->
+	<entry key="sicp_version">3</entry>
+
+	<!-- 浏览器信息 -->
+	<entry key="header_height">38</entry>
+	<entry key="header_url">pages/header.jsp</entry>
+	<entry key="explorer_client_ver">2.0.1.6</entry>
+	<entry key="explorer_setup_url">resource/setup/setupBrowser.exe</entry>
+
+	<!-- 数据窗口信息(90 120 125) -->
+	<entry key="datawindow_version">120</entry>
+
+	<!-- 医院license提示 -->
+	<entry key="exp_flag">1</entry>
+	<entry key="exp_days">5</entry>
+
+	<!--本地化标识 -->
+	<!-- <entry key="local_id">440100</entry> -->
+
+	<!-- 静态资源缓存(0关闭 1打开) -->
+	<entry key="use_staticresource_cache">1</entry>
+
+	<!-- 主页面 -->
+	<!-- <entry key="main_page">desktop</entry> -->
+
+	<!-- 统一平台服务器 -->
+	<entry key="up_server_flag">0</entry>
+	<entry key="up_sync_flag">0</entry>
+
+	<!-- 缺省字符集 -->
+	<entry key="charset">UTF-8</entry>
+</properties>

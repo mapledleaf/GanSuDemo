@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                                           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+                                                   http://www.springframework.org/schema/context
+                                                   http://www.springframework.org/schema/context/spring-context-4.1.xsd
+                                                   http://www.springframework.org/schema/jee
+                                                        http://www.springframework.org/schema/jee/spring-jee-4.1.xsd
+                                                        http://www.springframework.org/schema/mvc
+                                                   http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+                                                   http://www.springframework.org/schema/util 
+                                                   http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+                                                   
+	<bean id="mcce_bizh120133"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120133" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120133Service" />
+	</bean>
+	<bean id="mcce_bizh120001"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120001" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120001Service" />
+	</bean>
+	<bean id="mcce_bizh120002"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120002" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120002Service" />
+	</bean>
+	<bean id="mcce_bizh120003"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120003" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120003Service" />
+	</bean>
+	<bean id="mcce_bizh120004"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120004" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120004Service" />
+	</bean>
+	<bean id="mcce_bizh120005"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120005" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120005Service" />
+	</bean>
+	<bean id="mcce_bizh120102"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120102" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120102Service" />
+	</bean>
+	<bean id="mcce_bizh120103"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120103" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120103Service" />
+	</bean>
+	<bean id="mcce_bizh120104"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120104" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120104Service" />
+	</bean>
+	<bean id="mcce_bizh120105"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120105" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120105Service" />
+	</bean>
+	<bean id="mcce_bizh120106"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120106" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120106Service" />
+	</bean>
+	<bean id="mcce_bizh120107"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120107" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120107Service" />
+	</bean>
+	<bean id="mcce_bizh120108"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120108" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120108Service" />
+	</bean>
+	<bean id="mcce_bizh120109"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120109" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120109Service" />
+	</bean>
+	<bean id="mcce_bizh120110"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120110" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120110Service" />
+	</bean>
+	<bean id="mcce_bizh120111"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120111" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120111Service" />
+	</bean>
+		<!-- 中途结算 -->
+	<bean id="mcce_bizh120112"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120112" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120112Service" />
+	</bean>
+	
+	<bean id="mcce_bizh120203"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120203" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120203Service" />
+	</bean>
+	<bean id="mcce_bizh120302"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120302" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120302Service" />
+	</bean>
+	<bean id="mcce_bizh120312"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh120312" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh120312Service" />
+	</bean>
+	
+	<!-- 预约挂号 start -->
+	<bean id="mcce_bizh310001"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh310001" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh310001Service" />
+	</bean>
+	<bean id="mcce_bizh310002"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh310002" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh310002Service" />
+	</bean>
+	<bean id="mcce_bizh310003"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh310003" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh310003Service" />
+	</bean>
+	<bean id="mcce_bizh310004"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh310004" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh310004Service" />
+	</bean>
+	
+	<bean id="mcce_ybws31001"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_ybws31001" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.yygh.service.api.mcce.MCCEybws310001Service" />
+	</bean>
+	
+	<bean id="mcce_ybws31002"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_ybws31002" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.yygh.service.api.mcce.MCCEybws310002Service" />
+	</bean>
+	
+<!-- 	<bean id="mcce_ybws31003"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_ybws31003" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.yygh.service.api.mcce.MCCEybws310003Service" />
+	</bean> -->
+	
+<!-- 	<bean id="mcce_yygh001"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_yygh001" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.yygh.service.api.mcce.MCCEyygh001Service" />
+	</bean> -->
+	
+<!-- 	<bean id="mcce_yygh003"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_yygh003" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.yygh.service.api.mcce.MCCEyygh003Service" />
+	</bean> -->
+	<!-- 预约挂号 end -->
+	
+	<!-- 检查诊疗结果 start -->
+	<bean id="mcce_bizh410001"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/mcce_bizh410001" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.MCCEbizh410001Service" />
+	</bean>
+	<bean id="queryCheckCureInfoService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/queryCheckCureInfoService" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.inhospital.service.api.mcce.QueryCheckCureInfoService" />
+	</bean>
+	<!-- 检查诊疗结果 end -->
+	
+	<!-- 医院接入管理 start -->
+	<bean id="hospAccessMgrBizService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/hospAccessMgrBizService" />
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.hosp.service.api.HospAccessMgrBizService" />
+	</bean>
+	<!-- 医院接入管理 end -->
+</beans>

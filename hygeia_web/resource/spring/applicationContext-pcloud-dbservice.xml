@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                                           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+                                                   http://www.springframework.org/schema/context
+                                                   http://www.springframework.org/schema/context/spring-context-4.1.xsd
+                                                   http://www.springframework.org/schema/jee
+                                                        http://www.springframework.org/schema/jee/spring-jee-4.1.xsd
+                                                        http://www.springframework.org/schema/mvc
+                                                   http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+                                                   http://www.springframework.org/schema/util 
+                                                   http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+
+	<bean id="demoService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_DB}/hygeia_db/remoting/demoService"></property>
+		<property name="serviceInterface" value="com.powersi.demo.service.DemoService"></property>
+	</bean>
+	<!-- 门特(门慢) -->
+	<bean id="MtmmSpecialApplyService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/MtmmSpecialApplyService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.special.service.MtmmSpecialApplyService"></property>
+	</bean>
+	<!-- 门诊选点 -->
+	<bean id="MzchoHospitalBusApplyService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/MzchoHospitalBusApplyService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.special.service.MzchoHospitalBusApplyService"></property>
+	</bean>
+	<!-- 转诊转院 -->
+	<bean id="ChangeHospitalBusApplyService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/ChangeHospitalBusApplyService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.special.service.ChangeHospitalBusApplyService"></property>
+	</bean>
+
+	<!-- 业务查询 
+	<bean id="BizQueryApiService"
+		class="com.powersi.hygeia.comm.service.HygeiaServiceFactoryBean">
+		<property name="serviceUrl"
+			value="http://@{HYGEIA_ESB}/hygeia_esb/remoting/bizQueryApiService"></property>
+		<property name="serviceInterface"
+			value="com.powersi.biz.medicare.query.service.api.BizQueryApiService"></property>
+	</bean>-->
+</beans>

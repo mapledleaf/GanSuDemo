@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="gbk" ?>
+<config>
+	<app tag="02cc7697-bfe0-4ec2-9022-064f94f88262" />
+	<!-- 程序包版本，每个package代表一个程序包 -->
+	<!-- code：统一命名的程序包编码，不能变更 -->
+	<!-- name：包友好名称 -->
+	<!-- type：模块类型 -->
+	<!-- 1. updater，更新程序单独打包，单独进行版本控制，使用程序文件检测版本 -->
+	<!-- 2. main，主程序单独打包，单独进行版本控制，使用程序文件检测版本 -->
+	<!-- 3. support，每个支撑程序单独打包，单独进行版本控制，使用程序文件检测版本 -->
+	<!-- 4. service，每个本地接口服务程序单独打包，单独进行版本控制，使用程序文件或版本ini文件检测版本 -->
+	<!-- 5. device，每个通用类设备驱动程序单独打包，单独进行版本控制，使用版本ini文件检测版本 -->
+	<!-- version：版本号 -->
+	<!-- package_type：打包类型(zip或exe) -->
+	<!-- download_url：下载URL -->
+	<!-- 更新程序 -->
+	<package code="Updater" name="升级更新程序" type="updater" version="1.0.0.4" package_type="zip" download_url="Updater.zip" />
+	<!-- 主程序 -->
+	<package code="NativeAgent" name="主程序" type="main" version="1.0.0.5" package_type="zip" download_url="main.zip" />
+	<!-- 支撑程序 -->
+	<package code="libeay32" name="支撑程序" type="support" version="1.0.2.4" package_type="zip" download_url="libeay32.zip" />
+	<package code="ssleay32" name="支撑程序" type="support" version="1.0.2.4" package_type="zip" download_url="ssleay32.zip" />
+	<package code="libiconv" name="支撑程序" type="support" version="1.13.1.0" package_type="zip" download_url="libiconv.zip" />
+	<package code="libzbar" name="支撑程序" type="support" version="0.2.0.0" package_type="zip" download_url="libzbar.zip" />
+	<package code="msvcr120" name="支撑程序" type="support" version="12.0.21005.1" package_type="zip" download_url="msvcr120.zip" />
+	<!-- 客户服务平台程序 -->
+	<package code="CustomerService" name="客户服务平台程序" type="support" version="1.0.0.3" package_type="zip" download_url="CustomerService.zip" />
+	<!-- 本地接口服务模块 -->
+	<package code="CommonScan" name="高拍服务模块" type="service" version="1.0.0.3" package_type="zip" download_url="CommonScan.zip" />
+	<package code="CommonIDCard" name="身份证服务模块" type="service" version="1.0.0.3" package_type="zip" download_url="CommonIDCard.zip" />
+	<package code="CommonSSCard" name="社保卡服务模块" type="service" version="2.0.0.2" package_type="zip" download_url="CommonSSCard.zip" />
+	<package code="CommonKeyPass" name="客户端安全服务模块" type="service" version="1.0.0.3" package_type="zip" download_url="CommonKeyPass.zip" />
+	<package code="CommonFingerVein" name="指静脉服务模块" type="service" version="1.0.0.3" package_type="zip" download_url="CommonFingerVein.zip" />
+	<package code="CommonSDK" name="本地SDK服务模块" type="service" version="1.0.0.3" package_type="zip" download_url="CommonSDK.zip" />
+	<!-- 通用设备驱动模块 -->
+	<!-- 身份证 -->
+	<!-- 社保卡 -->
+	<package code="SSCardDriver_HD" name="华大" type="device" version="1.0.0.3" package_type="zip" download_url="SSCardDriver_HD.zip" />
+	<package code="SSCardDriver_MW" name="明华" type="device" version="1.0.0.2" package_type="zip" download_url="SSCardDriver_MW.zip" />
+	<!-- UKey设备驱动 -->
+	<package code="KeyPassDriver_ESKey" name="文鼎创" type="device" version="1.0.0.1" package_type="zip" download_url="KeyPassDriver_ESKey.zip" />
+	<!-- 指静脉 -->
+	<package code="FingerVeinDriver_Wedone" name="微盾" type="device" version="1.0.0.1" package_type="zip" download_url="FingerVeinDriver_Wedone.zip" />
+</config>

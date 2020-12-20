@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+	<!--========================= DBUBO DEFINITIONS========================= -->
+	<!--
+	<import resource="applicationContext-provider.xml" />
+	-->
+	<!--========================= RESOURCE DEFINITIONS========================= -->
+	<!-- Local DataSource that works in any environment -->
+	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName"> <value>${jdbc.driver}</value> </property> 
+		<property name="url"> <value>${jdbc.url}</value> </property> <property name="username"> 
+		<value>${jdbc.username}</value> </property> <property name="password"> <value>${jdbc.password}</value> 
+		</property> </bean> -->
+
+	<!-- JNDI DataSource for J2EE environments -->
+	<!-- JNDI Connection Pool -->
+	<!-- 在weblogic环境下使用JNDI，请务必删除WEB-INF/lib下的ojdbc5.jar，使用weblogic自带jdbc驱动 -->
+	<!-- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> 
+		<property name="jndiName"> <value>jdbc/pj3x</value> </property> </bean> -->
+
+	<!-- BoneCP Connection Pool -->
+	<!-- <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close"> 
+		<property name="driverClass" value="${jdbc.driver}" /> <property name="jdbcUrl" 
+		value="${jdbc.url}" /> <property name="username" value="${jdbc.username}" 
+		/> <property name="password" value="${jdbc.password}" /> <property name="idleConnectionTestPeriodInMinutes" 
+		value="30" /> <property name="idleMaxAgeInMinutes" value="30" /> <property 
+		name="maxConnectionsPerPartition" value="15" /> <property name="minConnectionsPerPartition" 
+		value="1" /> <property name="poolAvailabilityThreshold" value="0" /> <property 
+		name="acquireIncrement" value="1" /> <property name="partitionCount" value="1" 
+		/> <property name="releaseHelperThreads" value="3" /> <property name="statementsCacheSize" 
+		value="0" /> <property name="statementReleaseHelperThreads" value="0" /> 
+		<property name="closeConnectionWatch" value="false" /> <property name="logStatementsEnabled" 
+		value="false" /> <property name="statisticsEnabled" value="false" /> </bean> -->
+
+	<!-- C3P0 Connection Pool -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
+			<value>${jdbc.driver}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${jdbc.url}</value>
+		</property>
+		<property name="user">
+			<value>${jdbc.username}</value>
+		</property>
+		<property name="password">
+			<value>${jdbc.password}</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>1</value>
+		</property>
+		<property name="minPoolSize">
+			<value>1</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>500</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>1800</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>2</value>
+		</property>
+		<property name="maxStatements">
+			<value>0</value>
+		</property>
+		<property name="testConnectionOnCheckout">
+			<value>false</value>
+		</property>
+		<property name="breakAfterAcquireFailure">
+			<value>false</value>
+		</property>
+	</bean>
+
+	<!-- DBCP Connection Pool -->
+	<!-- <bean id="dataSourceDbcp" class="org.apache.commons.dbcp.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName"> <value>${jdbc.driver}</value> 
+		</property> <property name="url"> <value>${jdbc.url}</value> </property> 
+		<property name="username"> <value>${jdbc.username}</value> </property> <property 
+		name="password"> <value>${jdbc.password}</value> </property> <property name="maxActive"> 
+		<value>15</value> </property> <property name="initialSize"> <value>1</value> 
+		</property> <property name="maxWait"> <value>6000</value> </property> <property 
+		name="maxIdle"> <value>1</value> </property> <property name="minIdle"> <value>1</value> 
+		</property> </bean> -->
+
+	<!-- ========================= BUSINESS DEFINITIONS========================= -->
+	<bean id="ParameterParser" class="com.powersi.hygeia.framework.XMLParameterParse"
+		scope="prototype">
+		<property name="parameterObj">
+			<ref local="ParameterObject" />
+		</property>
+	</bean>
+	<bean id="ResultRender" class="com.powersi.hygeia.framework.XMLResultRender"
+		scope="prototype">
+		<property name="resultObj">
+			<ref local="ResultObject" />
+		</property>
+	</bean>
+
+	<bean id="ParameterObject" class="com.powersi.hygeia.framework.ParameterObj"
+		scope="prototype" />
+	<bean id="ResultObject" class="com.powersi.hygeia.framework.ResultObj"
+		scope="prototype" />
+
+	<bean id="ActionMapping" class="com.powersi.hygeia.framework.DBActionMapping"
+		scope="singleton" />
+	<bean id="ActionController" class="com.powersi.hygeia.framework.ActionController"
+		scope="singleton">
+		<property name="actionMapping">
+			<ref local="ActionMapping" />
+		</property>
+	</bean>
+	
+	<!-- 报表相关服务定义 -->
+	<bean id="PowerReport" class="com.powersi.powerreport.service.PowerReportImpl">
+		<!-- 临时文件路径，空表示使用系统临时路径 -->
+		<property name="tempPath" value=""></property>
+	</bean>
+	<bean id="PowerReportStore" class="com.powersi.powerreport.service.store.PowerReportStoreImpl_Mysql" />
+	<!-- end of 报表相关服务定义 -->
+	
+<!-- hy 20170112  修改为读配置文件的形式配置spring-session支持redis哨兵 -->
+	<bean id="configs"   
+   		class="org.springframework.beans.factory.config.PropertiesFactoryBean">  
+		   <property name="locations">  
+			  <list>  
+				<!-- 默认的在上，项目得在下，下面得最终生效 -->
+				<value>classpath*:conf-default/*.properties</value>							
+				<value>classpath*:conf/*.properties</value>
+				<value>file:/app/project/hygeia_web/*.properties</value>
+				<value>file:/Volumes/BOOTCAMP/*.properties</value>
+			  </list>  
+		   </property>  
+ 	</bean>
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<description>redis连接配置</description>
+		<property name="minIdle" value="${redis.minIdle}" />
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxTotal" value="${redis.maxTotal}" />
+		<property name="maxWaitMillis" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+	
+	<bean id="sentinelConfiguration"  
+        class="com.powersi.sys.session.service.SpringSessionFactory"> 
+        <description>生产redis哨兵的配置信息类</description> 
+        <property name="configs" ref="configs"></property>  
+    </bean>  
+	
+  <bean id="databaseParam" class="com.powersi.sys.session.service.MemoryDbParamFactoryBean">
+  			<description>redis数据库的选择参数</description>
+  			<property name="configs" ref="configs"></property>
+  			<property name="paramPart" value="database" ></property>
+  </bean>
+  
+  <bean id="timeoutParam" class="com.powersi.sys.session.service.MemoryDbParamFactoryBean">
+  			<description>redis超时的参数</description>
+  			<property name="configs" ref="configs"></property>
+  			<property name="paramPart" value="timeout" ></property>
+  </bean>
+  
+  <bean id="passwordParam" class="com.powersi.sys.session.service.MemoryDbParamFactoryBean">
+  			<description>redis连接的密码</description>
+  			<property name="configs" ref="configs"></property>
+  			<property name="paramPart" value="password" ></property>
+  </bean>
+  
+   <bean id="hostNameParam" class="com.powersi.sys.session.service.MemoryDbParamFactoryBean">
+  			<description>redis直连的redis服务器ip</description>
+  			<property name="configs" ref="configs"></property>
+  			<property name="paramPart" value="server" ></property>
+  </bean>
+  
+  <bean id="portParam" class="com.powersi.sys.session.service.MemoryDbParamFactoryBean">
+  			<description>redis直连的redis服务器端口</description>
+  			<property name="configs" ref="configs"></property>
+  			<property name="paramPart" value="port" ></property>
+  </bean>
+<!--之前雷总的配置 	<bean id="sessionConnectionFactory" -->
+<!-- 		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"> -->
+<!-- 		<description>session连接池</description> -->
+<!-- 		<property name="hostName" value="${redis.host}" /> -->
+<!-- 		<property name="port" value="${redis.port}" /> -->
+<!-- 		<property name="password" value="${redis.password}" /> -->
+<!-- 		<property name="database" value="1" /> -->
+<!-- 		<property name="poolConfig" ref="jedisPoolConfig" /> -->
+<!-- 	</bean>	 -->
+  <!-- 工厂中做了判断，如果sentinelConfig为null则进行直连，通过构造方法注入了不为null则采用哨兵模式 -->
+  <bean id="sessionConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<description>实例化redis连接工厂类</description>
+		<!-- 两个固定的配置 -->
+		<property name="hostName" ref="hostNameParam" />
+		<property name="port" ref="portParam" />
+		<!-- 3个根据采不采用哨兵模式而有不同配置的参数 -->
+		<property name="password" ref="passwordParam" />
+		<property name="database" ref="databaseParam" ></property>
+		<property name="timeout" ref="timeoutParam" ></property>
+		<constructor-arg ref="sentinelConfiguration"></constructor-arg>  
+        <constructor-arg ref="jedisPoolConfig"></constructor-arg>
+	</bean>
+	<bean id="sessionRedis" class="org.springframework.data.redis.core.RedisTemplate">
+		<description>session模板</description>
+		<property name="connectionFactory" ref="sessionConnectionFactory" />
+		<property name="keySerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+		<property name="hashKeySerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+		<property name="valueSerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+		</property>
+		<property name="hashValueSerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+		</property>
+	</bean>
+
+	<bean id="sessionRepository"
+			class="org.springframework.session.data.redis.RedisOperationsSessionRepository">
+			<description>session生产存储</description>
+			<constructor-arg ref="sessionConnectionFactory" />
+			<property name="defaultMaxInactiveInterval" value="${session.timeout.seconds}"></property>
+			<property name="redisKeyNamespace" value="${session.namespace}"></property>
+		</bean>
+
+		<bean id="springSessionRepositoryFilter"
+			class="org.springframework.session.web.http.SessionRepositoryFilter">
+			<description>session过滤器</description>
+			<constructor-arg ref="sessionRepository" />
+		</bean>	
+</beans>
