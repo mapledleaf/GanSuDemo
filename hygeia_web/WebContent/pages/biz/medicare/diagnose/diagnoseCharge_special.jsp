@@ -58,8 +58,8 @@
 				<powersi:hidden id="btnVoucher" label="获取电子凭证" onclick="callScanMachine()" disabled="false" />
 				<!--  end  -->
 				<powersi:button id="save" key="保存登记" onclick="saveRegister();" disabled="false" />
-				<powersi:button id="btnCalc0" key="button_calc0" onclick="calc(0);" disabled="false" />
-				<powersi:button id="btnCalc1" key="button_calc1" onclick="calc(1);" disabled="false" />
+				<powersi:button id="btnCalc0" key="button_calc0" onclick="calc(0);" disabled="true" />
+				<powersi:button id="btnCalc1" key="button_calc1" onclick="calc(1);" disabled="true" />
 				<powersi:hidden id="btnCalc2" label="扫码结算" onclick="calc(2);" disabled="true" />
 				<powersi:hidden id="readele_diaBtn" key="扫码" />
 				<powersi:hidden id="btnFace" key="人脸采集" disabled="true" onclick="javascript:doPhoto();" />
