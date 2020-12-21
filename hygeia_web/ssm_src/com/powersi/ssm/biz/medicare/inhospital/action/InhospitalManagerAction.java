@@ -733,20 +733,22 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void loadAkf001List(Map akf001List) {
-		HospInfoDTO hospInfoDto = new HospInfoDTO();
-		hospInfoDto.setAkb020(this.getInHospitalDTO().getAkb020());
-		hospInfoDto.setAae016("1");
-		hospInfoDto.setAae100("1");
+//		HospInfoDTO hospInfoDto = new HospInfoDTO();
+//		hospInfoDto.setAkb020(this.getInHospitalDTO().getAkb020());
+//		hospInfoDto.setAae016("1");
+//		hospInfoDto.setAae100("1");
+//
+//		HospApiService hospApiService = this.getHygeiaServiceManager().getBeanByClass(MCCEHospApiServiceImpl.class,
+//				this.getInHospitalDTO().getAkb020());
+//		List<HospInfoDTO> deptRows = hospApiService.queryHospDept(this.getInHospitalDTO().getAkb020(), hospInfoDto);
+//
+//		if (deptRows != null) {
+//			for (HospInfoDTO deptRow : deptRows) {
+//				akf001List.put(deptRow.getBkc156(), deptRow.getBkc157());
+//			}
+//		}
 
-		HospApiService hospApiService = this.getHygeiaServiceManager().getBeanByClass(MCCEHospApiServiceImpl.class,
-				this.getInHospitalDTO().getAkb020());
-		List<HospInfoDTO> deptRows = hospApiService.queryHospDept(this.getInHospitalDTO().getAkb020(), hospInfoDto);
-
-		if (deptRows != null) {
-			for (HospInfoDTO deptRow : deptRows) {
-				akf001List.put(deptRow.getBkc156(), deptRow.getBkc157());
-			}
-		}
+		akf001List.put("001", "眼科");
 	}
 
 	/**
@@ -775,24 +777,25 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Map loadAke022Map() {
 		Map ake022Map = new HashMap();
-		if (StringUtils.isNotBlank(this.getInHospitalDTO().getAkf001())) {
-			HospInfoDTO hospInfoDto = new HospInfoDTO();
-			hospInfoDto.setAkb020(this.getInHospitalDTO().getAkb020());
-			hospInfoDto.setAae016("1");
-			hospInfoDto.setAae100("1");
-			hospInfoDto.setBkc156(this.getInHospitalDTO().getAkf001());
-
-			HospApiService hospApiService = this.getHygeiaServiceManager().getBeanByClass(MCCEHospApiServiceImpl.class,
-					this.getInHospitalDTO().getAkb020());
-			List<HospInfoDTO> doctorRows = hospApiService.queryHospDoctor(this.getInHospitalDTO().getAkb020(),
-					hospInfoDto);
-
-			if (doctorRows != null) {
-				for (HospInfoDTO doctorRow : doctorRows) {
-					ake022Map.put(doctorRow.getBkc274(), doctorRow.getBkc275());
-				}
-			}
-		}
+//		if (StringUtils.isNotBlank(this.getInHospitalDTO().getAkf001())) {
+//			HospInfoDTO hospInfoDto = new HospInfoDTO();
+//			hospInfoDto.setAkb020(this.getInHospitalDTO().getAkb020());
+//			hospInfoDto.setAae016("1");
+//			hospInfoDto.setAae100("1");
+//			hospInfoDto.setBkc156(this.getInHospitalDTO().getAkf001());
+//
+//			HospApiService hospApiService = this.getHygeiaServiceManager().getBeanByClass(MCCEHospApiServiceImpl.class,
+//					this.getInHospitalDTO().getAkb020());
+//			List<HospInfoDTO> doctorRows = hospApiService.queryHospDoctor(this.getInHospitalDTO().getAkb020(),
+//					hospInfoDto);
+//
+//			if (doctorRows != null) {
+//				for (HospInfoDTO doctorRow : doctorRows) {
+//					ake022Map.put(doctorRow.getBkc274(), doctorRow.getBkc275());
+//				}
+//			}
+//		}
+		ake022Map.put("001", "李医生");
 		return ake022Map;
 	}
 
@@ -820,22 +823,23 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Map loadBka021Map() {
 		Map bka021Map = new HashMap();
-		if (StringUtils.isNotBlank(this.getInHospitalDTO().getAkf001())) {
-			HospInfoDTO hospInfoDto = new HospInfoDTO();
-			hospInfoDto.setAkb020(this.getInHospitalDTO().getAkb020());
-			hospInfoDto.setAae016("1");
-			hospInfoDto.setAae100("1");
-			hospInfoDto.setBkc156(this.getInHospitalDTO().getAkf001());
-			HospApiService hospApiService = this.getHygeiaServiceManager().getBeanByClass(MCCEHospApiServiceImpl.class,
-					this.getInHospitalDTO().getAkb020());
-			List<HospInfoDTO> areaRows = hospApiService.queryHospArea(this.getInHospitalDTO().getAkb020(), hospInfoDto);
-
-			if (areaRows != null) {
-				for (HospInfoDTO areaRow : areaRows) {
-					bka021Map.put(StringUtils.trim(areaRow.getBkc153()), areaRow.getBkc154());
-				}
-			}
-		}
+//		if (StringUtils.isNotBlank(this.getInHospitalDTO().getAkf001())) {
+//			HospInfoDTO hospInfoDto = new HospInfoDTO();
+//			hospInfoDto.setAkb020(this.getInHospitalDTO().getAkb020());
+//			hospInfoDto.setAae016("1");
+//			hospInfoDto.setAae100("1");
+//			hospInfoDto.setBkc156(this.getInHospitalDTO().getAkf001());
+//			HospApiService hospApiService = this.getHygeiaServiceManager().getBeanByClass(MCCEHospApiServiceImpl.class,
+//					this.getInHospitalDTO().getAkb020());
+//			List<HospInfoDTO> areaRows = hospApiService.queryHospArea(this.getInHospitalDTO().getAkb020(), hospInfoDto);
+//
+//			if (areaRows != null) {
+//				for (HospInfoDTO areaRow : areaRows) {
+//					bka021Map.put(StringUtils.trim(areaRow.getBkc153()), areaRow.getBkc154());
+//				}
+//			}
+//		}
+		bka021Map.put("001","一病区");
 		return bka021Map;
 	}
 
@@ -849,23 +853,24 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 		try {
 			this.initCtrlInHospitalDTO();
 			Map ake020List = new HashMap();
-			if (StringUtils.isNotBlank(this.getInHospitalDTO().getBka021())) {
-				HospInfoDTO hospInfoDto = new HospInfoDTO();
-				hospInfoDto.setAkb020(this.getInHospitalDTO().getAkb020());
-				hospInfoDto.setAae016("1");
-				hospInfoDto.setAae100("1");
-				hospInfoDto.setBkc171("0");
-				hospInfoDto.setBkc153(this.getInHospitalDTO().getBka021());
-				HospApiService hospApiService = this.getHygeiaServiceManager()
-						.getBeanByClass(MCCEHospApiServiceImpl.class, this.getInHospitalDTO().getAkb020());
-				List<HospInfoDTO> bedRows = hospApiService.queryHospBed(this.getInHospitalDTO().getAkb020(),
-						hospInfoDto);
-				if (bedRows != null) {
-					for (HospInfoDTO bedRow : bedRows) {
-						ake020List.put(String.valueOf(bedRow.getBkc161()), bedRow.getBkc161());
-					}
-				}
-			}
+//			if (StringUtils.isNotBlank(this.getInHospitalDTO().getBka021())) {
+//				HospInfoDTO hospInfoDto = new HospInfoDTO();
+//				hospInfoDto.setAkb020(this.getInHospitalDTO().getAkb020());
+//				hospInfoDto.setAae016("1");
+//				hospInfoDto.setAae100("1");
+//				hospInfoDto.setBkc171("0");
+//				hospInfoDto.setBkc153(this.getInHospitalDTO().getBka021());
+//				HospApiService hospApiService = this.getHygeiaServiceManager()
+//						.getBeanByClass(MCCEHospApiServiceImpl.class, this.getInHospitalDTO().getAkb020());
+//				List<HospInfoDTO> bedRows = hospApiService.queryHospBed(this.getInHospitalDTO().getAkb020(),
+//						hospInfoDto);
+//				if (bedRows != null) {
+//					for (HospInfoDTO bedRow : bedRows) {
+//						ake020List.put(String.valueOf(bedRow.getBkc161()), bedRow.getBkc161());
+//					}
+//				}
+//			}
+			ake020List.put("001", "01");
 			this.setJSONReturn(ake020List);
 		} catch (Throwable e) {
 			String errLogSn = this.addErrSNInfo();
@@ -3366,7 +3371,7 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 				this.initCtrlInHospitalDTO(aka130_12);
 				this.getInHospitalDTO().setSearchType("py");
 				this.setAke007(DateFunc.dateToString(DateFunc.getDate(), "yyyyMMdd"));
-				this.loadBka075List();
+				//this.loadBka075List();
 				return "inputFee";
 			}
 		} catch (Throwable e) {

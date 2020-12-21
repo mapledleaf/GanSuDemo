@@ -48,28 +48,28 @@
 		<powersi:panelbox key="查询条件">
 			<powersi:panelbox-toolbar>
 				<!--  【NTS20050800118】电子凭证动态库开发 唤醒扫码机 by 钟声 20200505 -->
-                <div id="operFlag">
-                    <td>电子凭证</td>
-					<!-- 【NTS20052500228】使用支付宝设备点击二维码获取人员信息时，
-                        只需要操作人员选择二维码还是刷脸的形式直接唤醒设备进行扫二维码或刷脸操作。
-                        不需要参保人员在支付宝设备上进行选择。 龚喜洋  2020/05/26 -->
-					<select id="transType" class="select" onchange="" style="width:100px;">
-						<option value="0" selected="" style="width: 50px">微信解码</option>
-						<option value="1" style="width: 50px" selected>支付宝解码</option>
-						<option value="2" style="width: 50px" >支付宝刷脸</option>
-					</select>
-                </div>&nbsp;
-                <powersi:button id="btnVoucher" label="获取电子凭证" onclick="callScanMachine()" disabled="false" />
-                <!--  end  -->	
-				<powersi:button id="readele_btn" key="扫码" />
+<%--                <div id="operFlag">--%>
+<%--                    <td>电子凭证</td>--%>
+<%--					<!-- 【NTS20052500228】使用支付宝设备点击二维码获取人员信息时，--%>
+<%--                        只需要操作人员选择二维码还是刷脸的形式直接唤醒设备进行扫二维码或刷脸操作。--%>
+<%--                        不需要参保人员在支付宝设备上进行选择。 龚喜洋  2020/05/26 -->--%>
+<%--					<select id="transType" class="select" onchange="" style="width:100px;">--%>
+<%--						<option value="0" selected="" style="width: 50px">微信解码</option>--%>
+<%--						<option value="1" style="width: 50px" selected>支付宝解码</option>--%>
+<%--						<option value="2" style="width: 50px" >支付宝刷脸</option>--%>
+<%--					</select>--%>
+<%--                </div>&nbsp;--%>
+<%--                <powersi:button id="btnVoucher" label="获取电子凭证" onclick="callScanMachine()" disabled="false" />--%>
+<%--                <!--  end  -->	--%>
+<%--				<powersi:button id="readele_btn" key="扫码" />--%>
 				<powersi:button id="btTryCalcTreat" label="费用试算"
 					onclick="outChargeTryCalcTreat();" key="button_calc0" />
 				<powersi:button id="btCalcOutCharge" label="费用结算"
 					onclick="saveOutCharge();" key="button_calc1" />
-				<powersi:button id="btoutChargePrint" label="打印结算单"
-					onclick="outChargePrint();" key="button_print" />
-				<powersi:button id="btFundStatusQuery" label="基金状态"
-					onclick="fundStatusQuery();" key="button_query" />
+<%--				<powersi:button id="btoutChargePrint" label="打印结算单"--%>
+<%--					onclick="outChargePrint();" key="button_print" />--%>
+<%--				<powersi:button id="btFundStatusQuery" label="基金状态"--%>
+<%--					onclick="fundStatusQuery();" key="button_query" />--%>
 				<powersi:button id="btoutChargeReset" label="重置"
 					onclick="outChargeReset();" key="button_reset" />
 				<powersi:reset id="btReset" label="重置" cssStyle="display:none;" />
@@ -174,10 +174,13 @@
 					label="入院诊断" readonly="true" />
 			</powersi:editorlayout-row>
 			<powersi:editorlayout-row>
-				<powersi:textfield id="aka128" label="手术治疗方式" title="请输入手术治疗方式"
-					onkeydown="keydown(this)" required="false" readonly="true"
-					buttonText="选择" buttonId="aka127_button" buttonDisabled="false"
-					onbuttonclick="chooseAke025()" />
+				<powersi:codeselect id="bka066" name="inHospitalDTO.bka066"
+									label="出院转归情况" codeType="bka066" required="true"
+									displayonly="false" cssClass="select2" showValue="false" />
+<%--				<powersi:textfield id="aka128" label="手术治疗方式" title="请输入手术治疗方式"--%>
+<%--					onkeydown="keydown(this)" required="false" readonly="true"--%>
+<%--					buttonText="选择" buttonId="aka127_button" buttonDisabled="false"--%>
+<%--					onbuttonclick="chooseAke025()" />--%>
 				<powersi:textfield id="bkz102" name="inHospitalDTO.bkz102"
 					label="出院诊断" title="请输入出院诊断" onkeydown="keydown(this)"
 					required="true" readonly="true" buttonText="选择"
@@ -190,13 +193,13 @@
 					label="出院日期" onchange="onchangeAae031(this)" mask="date"
 					required="true" readonly="false" />
 			</powersi:editorlayout-row>
-			<powersi:editorlayout-row>
-				<powersi:codeselect id="bka066" name="inHospitalDTO.bka066"
-					label="出院转归情况" codeType="bka066" required="true"
-					displayonly="false" cssClass="select2" showValue="false" />
-				<powersi:textfield id="bka245" name="inHospitalDTO.bka245"
-					label="预付款" readonly="true" cssStyle="color:red;" />	
-			</powersi:editorlayout-row>
+<%--			<powersi:editorlayout-row>--%>
+<%--				<powersi:codeselect id="bka066" name="inHospitalDTO.bka066"--%>
+<%--					label="出院转归情况" codeType="bka066" required="true"--%>
+<%--					displayonly="false" cssClass="select2" showValue="false" />--%>
+<%--				<powersi:textfield id="bka245" name="inHospitalDTO.bka245"--%>
+<%--					label="预付款" readonly="true" cssStyle="color:red;" />	--%>
+<%--			</powersi:editorlayout-row>--%>
 		</powersi:editorlayout>
 	</powersi:form>
 	<powersi:panelbox cssStyle="display:none;">

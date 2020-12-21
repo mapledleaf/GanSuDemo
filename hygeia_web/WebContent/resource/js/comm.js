@@ -815,30 +815,30 @@ function call_agent_manage(param, callback) {
 
 var __isPing = function(callback) {
 	// 1、判断当前window程序有没有安装或打开
-	$.ajax({
-		type : 'POST',
-		url : __nativeAgent.agent_manage_url,
-		data : {
-			"func_id" : "ping",
-			"data" : {}
-		},
-		dataType : 'json',
-		success : function(res) {// 回调函数
-			if(getdate()<=20190111)
-			{
-				updateDownLoad();//修改地址
-			}
-			
-			if (typeof callback === 'function') {
-				callback(res);
-			}
-
-		},
-		error : function() {// 请求出错处理操作
-			setupSICardExe_client();
-			return;
-		}
-	});
+	// $.ajax({
+	// 	type : 'POST',
+	// 	url : __nativeAgent.agent_manage_url,
+	// 	data : {
+	// 		"func_id" : "ping",
+	// 		"data" : {}
+	// 	},
+	// 	dataType : 'json',
+	// 	success : function(res) {// 回调函数
+	// 		if(getdate()<=20190111)
+	// 		{
+	// 			updateDownLoad();//修改地址
+	// 		}
+	//
+	// 		if (typeof callback === 'function') {
+	// 			callback(res);
+	// 		}
+	//
+	// 	},
+	// 	error : function() {// 请求出错处理操作
+	// 		setupSICardExe_client();
+	// 		return;
+	// 	}
+	// });
 };
 
 

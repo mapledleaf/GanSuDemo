@@ -21,8 +21,8 @@
 					onclick="outRegisterTryCalcTreat()" />
 				<powersi:button id="btSaveOutRegister" label="保存登记"
 					onclick="saveOutRegister()" />
-				<powersi:button id="btFundStatusQuery" label="基金状态"
-					onclick="fundStatusQuery()" />
+<%--				<powersi:button id="btFundStatusQuery" label="基金状态"--%>
+<%--					onclick="fundStatusQuery()" />--%>
 				<powersi:button id="btResetOutRegister" label="重置"
 					onclick="resetOutRegister()" />
 				<powersi:reset id="btReset" label="重置" cssStyle="display:none;" />
@@ -103,11 +103,11 @@
 					<powersi:hidden id="bka890" name="bka890" />
 					<powersi:textfield id="bka043" name="inHospitalDTO.bka043"
 						label="出院说明" readonly="false" />
-					<powersi:textfield id="bka018" name="inHospitalDTO.bka018"
-						label="多诊断" title="请输入出院多诊断" onkeydown="keydown(this)"
-						required="false" readonly="true" buttonText="选择"
-						buttonId="bka018_button" buttonDisabled="false"
-						onbuttonclick="choosebka018()" />
+<%--					<powersi:textfield id="bka018" name="inHospitalDTO.bka018"--%>
+<%--						label="多诊断" title="请输入出院多诊断" onkeydown="keydown(this)"--%>
+<%--						required="false" readonly="true" buttonText="选择"--%>
+<%--						buttonId="bka018_button" buttonDisabled="false"--%>
+<%--						onbuttonclick="choosebka018()" />--%>
 				</powersi:editorlayout-row>
 				<powersi:editorlayout-row id="bka898_str">
 					<powersi:codeselect id="bka898" name="inHospitalDTO.bka898"

@@ -133,16 +133,16 @@ function saveUserConfig(code, value, callback){
 }
 
 function getUserConfig(code, value, callback){
-	try{
-		setRunning(false);
-		postAjax(rootPath + "/login/settings!findConfig.action", {
-			"code": code,
-			"value": value
-		}, callback);
-		setRunning(true);
-	} catch(ex){
-		
-	}
+	// try{
+	// 	setRunning(false);
+	// 	postAjax(rootPath + "/login/settings!findConfig.action", {
+	// 		"code": code,
+	// 		"value": value
+	// 	}, callback);
+	// 	setRunning(true);
+	// } catch(ex){
+	//
+	// }
 }
 
 var loadingIndex = null;

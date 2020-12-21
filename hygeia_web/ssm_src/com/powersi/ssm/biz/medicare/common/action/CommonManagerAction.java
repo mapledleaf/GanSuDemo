@@ -6,6 +6,7 @@ import com.powersi.biz.medicare.catalog.service.api.HospElectpresService;
 import com.powersi.biz.medicare.comm.pojo.KA06DTO;
 import com.powersi.biz.medicare.comm.pojo.KAB8DTO;
 import com.powersi.biz.medicare.comm.pojo.ListResult;
+import com.powersi.biz.medicare.comm.pojo.ListResultDTO;
 import com.powersi.biz.medicare.comm.service.DiseaseQueryService;
 import com.powersi.biz.medicare.comm.service.HospitalCatalogMatchedQueryService;
 import com.powersi.biz.medicare.comm.service.IdentifyPasswordService;
@@ -28,6 +29,7 @@ import com.powersi.ssm.biz.medicare.api.service.mcce.IdentifyPasswordServiceImpl
 import com.powersi.ssm.biz.medicare.api.service.mcce.MCCEbizh120001ServiceImpl;
 import com.powersi.ssm.biz.medicare.api.service.mcce.MCCEbizh120302ServiceImpl;
 import com.powersi.ssm.biz.medicare.common.util.BizHelper;
+import com.powersi.ssm.biz.medicare.common.util.GanSuDemoUtils;
 import com.powersi.ssm.biz.medicare.common.util.SFTPUtils;
 import com.powersi.ssm.biz.medicare.diagnose.service.DiagnoseRegisterService;
 import com.powersi.ssm.biz.medicare.inhospital.action.BaseInhospitalManagerAction;
@@ -216,31 +218,33 @@ public class CommonManagerAction extends BaseInhospitalManagerAction {
                     PagerHelper.initPagination(this.getRequest());
                     this.getInHospitalDTO().setCurrentPage(PagerHelper.getPaginationObj().getPageIndex());
                     this.getInHospitalDTO().setPageSize(PagerHelper.getPaginationObj().getPageSize());
-                    HospitalCatalogMatchedQueryService hospitalCatalogMatchedQueryService = (HospitalCatalogMatchedQueryService) this
-                            .getHygeiaServiceManager()
-                            .getBean("hospitalCatalogMatchedQueryServiceesb", this.getInHospitalDTO().getAkb020());
+//                    HospitalCatalogMatchedQueryService hospitalCatalogMatchedQueryService = (HospitalCatalogMatchedQueryService) this
+//                            .getHygeiaServiceManager()
+//                            .getBean("hospitalCatalogMatchedQueryServiceesb", this.getInHospitalDTO().getAkb020());
                     // 如是村卫生站，只让检索出大类供选择
-                    if ("1".equals(this.getParameter("healthposts_flag", ""))) {
-                        this.getInHospitalDTO().setHealthposts_flag("1");
-                    }
-                    ListResult listResult = hospitalCatalogMatchedQueryService
-                            .queryHospitalCatalogMatched(this.getInHospitalDTO());
+//                    if ("1".equals(this.getParameter("healthposts_flag", ""))) {
+//                        this.getInHospitalDTO().setHealthposts_flag("1");
+//                    }
+//                    ListResult listResult = hospitalCatalogMatchedQueryService
+//                            .queryHospitalCatalogMatched(this.getInHospitalDTO());
+                    List<InHospitalDTO> catalogList = GanSuDemoUtils.CATALOG_LIST;
+                    ListResult listResult = ListResultDTO.newInstance().setCount(catalogList.size()).setList(catalogList);
                     this.loadFeeDataItemName(listResult);
-                    if ("2".equals(this.getParameter("type", ""))) {
-                        HospManagerService hospManagerService = this.getHygeiaServiceManager()
-                                .getBeanByClass(HospManagerService.class, this.getInHospitalDTO().getAkb020());
-                        Kzh04Dto kzh04Dto = new Kzh04Dto();
-                        kzh04Dto.setAkb020(this.getInHospitalDTO().getAkb020());
-                        List<Kzh04Dto> kzh04Dtos = hospManagerService.selectFeeSetMealFee(kzh04Dto,
-                                this.getAllParameters());
-                        if (kzh04Dtos != null && !kzh04Dtos.isEmpty()) {
-                            List retList = hospManagerService.createKzh04InputFee(kzh04Dto, this.getAllParameters(),
-                                    kzh04Dtos);
-                            if (retList != null && !retList.isEmpty() && listResult.getList() != null) {
-                                listResult.getList().addAll(0, retList);
-                            }
-                        }
-                    }
+//                    if ("2".equals(this.getParameter("type", ""))) {
+//                        HospManagerService hospManagerService = this.getHygeiaServiceManager()
+//                                .getBeanByClass(HospManagerService.class, this.getInHospitalDTO().getAkb020());
+//                        Kzh04Dto kzh04Dto = new Kzh04Dto();
+//                        kzh04Dto.setAkb020(this.getInHospitalDTO().getAkb020());
+//                        List<Kzh04Dto> kzh04Dtos = hospManagerService.selectFeeSetMealFee(kzh04Dto,
+//                                this.getAllParameters());
+//                        if (kzh04Dtos != null && !kzh04Dtos.isEmpty()) {
+//                            List retList = hospManagerService.createKzh04InputFee(kzh04Dto, this.getAllParameters(),
+//                                    kzh04Dtos);
+//                            if (retList != null && !retList.isEmpty() && listResult.getList() != null) {
+//                                listResult.getList().addAll(0, retList);
+//                            }
+//                        }
+//                    }
                     PagerHelper.getPaginationObj().setCount(listResult.getCount());
                     DataGridHelper.render(this.getRequest(), this.getResponse(),
                             PagerHelper.getPaginatedList(listResult.getList()));
@@ -584,21 +588,30 @@ public class CommonManagerAction extends BaseInhospitalManagerAction {
                     this.getKa06dto().setAaa027(BizHelper.getAaa027());
                     this.getKa06dto().setBke217("2");
 
-                    DiseaseQueryService diseaseQueryService = (DiseaseQueryService) this.getHygeiaServiceManager()
-                            .getBean("diseaseQueryServiceesbImpl", this.getKa06dto().getAkb020());
-                    List<KA06DTO> cumulativeList = diseaseQueryService.querybke216(this.getKa06dto());
-                    String bke216 = "";
-                    for (int i = 0; i < cumulativeList.size(); i++) {
-                        KA06DTO bke216temp = cumulativeList.get(i);
-                        if (bke216temp.getBke216() != null && !"".equals(bke216temp.getBke216())) {
-                            bke216 = bke216temp.getBke216();
-                        }
-                    }
-                    if (StringUtils.isBlank(bke216)) {
-                    } else {
-                        this.getKa06dto().setAaa027(bke216);
-                    }
-                    ListResult listResult = diseaseQueryService.queryDisease(this.getKa06dto());
+//                    DiseaseQueryService diseaseQueryService = (DiseaseQueryService) this.getHygeiaServiceManager()
+//                            .getBean("diseaseQueryServiceesbImpl", this.getKa06dto().getAkb020());
+//                    List<KA06DTO> cumulativeList = diseaseQueryService.querybke216(this.getKa06dto());
+//                    String bke216 = "";
+//                    for (int i = 0; i < cumulativeList.size(); i++) {
+//                        KA06DTO bke216temp = cumulativeList.get(i);
+//                        if (bke216temp.getBke216() != null && !"".equals(bke216temp.getBke216())) {
+//                            bke216 = bke216temp.getBke216();
+//                        }
+//                    }
+//                    if (StringUtils.isBlank(bke216)) {
+//                    } else {
+//                        this.getKa06dto().setAaa027(bke216);
+//                    }
+//                    ListResult listResult = diseaseQueryService.queryDisease(this.getKa06dto());
+
+                    List<Map<String, String>> list = new ArrayList<>();
+                    Map<String, String> diseaseMap = new HashMap<>();
+                    diseaseMap.put("aka120", "000000");
+                    diseaseMap.put("aka121", "普通疾病");
+                    list.add(diseaseMap);
+
+                    ListResult listResult = ListResultDTO.newInstance().setList(list)
+                    				.setCount(1);
                     PagerHelper.getPaginationObj().setCount(listResult.getCount());
                     DataGridHelper.render(this.getRequest(), this.getResponse(),
                             PagerHelper.getPaginatedList(listResult.getList()));
