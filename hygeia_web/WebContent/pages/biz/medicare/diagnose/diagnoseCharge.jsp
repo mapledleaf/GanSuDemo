@@ -69,9 +69,9 @@
 				<%--                </div>&nbsp;--%>
 				<powersi:hidden id="btnVoucher" label="获取电子凭证" onclick="callScanMachine()" disabled="false" />
 				<!--  end  -->
-				<powersi:button id="save" key="保存登记" onclick="save(0);" disabled="true" />
-				<powersi:button id="btnCalc0" key="button_calc0" onclick="calc(0);" disabled="true" />
-				<powersi:button id="btnCalc1" key="button_calc1" onclick="calcReadic(1);" disabled="true" />
+
+				<powersi:button id="btnCalc0" key="button_calc0" onclick="calc(0);" disabled="false" />
+				<powersi:button id="btnCalc1" key="button_calc1" onclick="calc(1);" disabled="false" />
 				<powersi:hidden id="btnCalc2" label="扫码结算" onclick="calc(2);" disabled="true" />
 				<powersi:hidden id="readele_diaBtn" key="扫码" />
 				<powersi:hidden id="btnFace" key="人脸采集" disabled="true" onclick="javascript:doPhoto();" />
@@ -94,6 +94,7 @@
 									   name="diagnoseInfoDTO.bka008" readonly="true" />
 					<powersi:textfield id="aac003" key="姓名"
 									   name="diagnoseInfoDTO.aac003" readonly="true" />
+					<powersi:hidden id="calcType" value="0"/>
 				</powersi:editorlayout-row>
 			</powersi:editorlayout>
 		</powersi:panelbox>
@@ -107,6 +108,8 @@
 		<powersi:hidden id="aaa027" name="diagnoseInfoDTO.aaa027" />
 		<powersi:hidden id="aae013" name="diagnoseInfoDTO.aae013" />
 		<powersi:hidden id="akb020" name="diagnoseInfoDTO.akb020" value="${akb020 }"/>
+
+
 
 		<!-- TS19032800229 - 【需求开发】电子社保卡应用相关功能模块改造  增加订单号  modified 675 2019年3月28日  -->
 		<powersi:hidden id="bizorder" name="diagnoseInfoDTO.bizorder" />
@@ -174,81 +177,11 @@
 		}
 
 		function calc(str) {
-			console.log("isReadCard:" + isReadCard + ";ecIndexNo:"+ $("#ecIndexNo").val() + ";argName:"+ $("#argName").val());
-			if (!checkForm()) {
-				return;
+			if("1" == str){
+				$("#idType").val("1");
 			}
-
-			if($("#argName").val()==="qrcode"){
-				$("#aae013").val("1");
-			}
-
-			if ($("#aac001").val() == '' || $("#aac001").val() == -1) {
-				popupAlert("请先检索到人员信息后再录入费用计算！");
-				return $("#queryString").focus();
-			}
-			if(<%=isPic%>){
-				//【NTS20050800118】电子凭证动态库开发  电子凭证屏蔽照片 钟声 2020/05/13
-				if( electronicVoucher === null && $("#argName").val()=="aac002" && $("#reduceflag").val()=="0" &&
-						($("#dlrimg").attr("src")=="" || $("#dlrimg").attr("src")==undefined)
-						&& isReadCard=="0"){
-					popupAlert("未检测到照片，请重新采集！");
-					return;
-				}
-			}
-			var feeinfo = gridFeeDetail.getData();
-			feeinfo = powersi.tostring(feeinfo);
-			$('#feeinfo').val(encodeURI(feeinfo));
-			if (gridFeeDetail.getRowsCount() <= 0) {
-				popupAlert("请先录入费用后再计算！");
-				return;
-			}
-
-			//校验两病病种
-			if (!checkMzlbInfo()) {
-				return;
-			}
-
 			var saveItemData = $("#bizForm").serialize();
-			if (str == "0") {
-				postJSON("${rootPath}/medicare/DiagnoseRegisterAction!diagnoseCalcSave.action",saveItemData, importCalcInfo);
-			}else if(str == "2"){  //扫码结算    /* TS19032800229 - 【需求开发】电子社保卡应用相关功能模块改造  默认不扫码结算  modified 675 2019年3月28日  */
-				if(isReadCard=="2"){  //扫码获取 调用110114接口
-					$("#btnFace").attr("disabled", true);
-					$("#btnCalc0").attr("disabled", true);
-					$("#btnCalc1").attr("disabled", true);
-					$("#btnCalc2").attr("disabled", true);
-					$("#querystring").attr("disabled", true);
-					$("#readele_diaBtn").attr("disabled", true);
-					var data = $.param({"diagnoseInfoDTO.esscno":"2"}) + "&" + saveItemData;
-					postJSON("${rootPath}/medicare/DiagnoseRegisterAction!diagnoseCalcSave.action",data, importCalcInfo);
-				}else if(isReadCard=="3"){  //支付宝的扫码结算,调用110124接口   TS19092400141 - 【需求开发】电子社保卡医保结算业务相关优化改造  add by wtf 2019年9月26日
-					$("#btnFace").attr("disabled", true);
-					$("#btnCalc0").attr("disabled", true);
-					$("#btnCalc1").attr("disabled", true);
-					$("#btnCalc2").attr("disabled", true);
-					$("#querystring").attr("disabled", true);
-					$("#readele_diaBtn").attr("disabled", true);
-					var data = $.param({"diagnoseInfoDTO.esscno":"2"}) + "&" + saveItemData;
-					postJSON("${rootPath}/medicare/DiagnoseRegisterAction!diagnoseCalcSaveAli.action",data, importCalcInfo);
-				}
-				else{
-					popupAlert("非电子社保卡扫码结算,请确定！");
-					return;
-				}
-			} else {
-				if(isReadCard=="2"){
-					popupAlert("电子社保卡,只能扫码结算！");
-					return;
-				}else{
-					//【NTS20051100306】 记录电子凭证所办理的业务 by 钟声 2020/05/14
-					var data = saveItemData;
-					if(electronicVoucher != null){
-						data = $.param({"isElectronicVoucher":"1"}) + "&" + saveItemData;
-					}
-					postJSON("${rootPath}/medicare/DiagnoseRegisterAction!diagnoseCalcEnPay.action",data, importCalcInfo);
-				}
-			}
+			postJSON("${rootPath}/medicare/DiagnoseRegisterAction!diagnoseCalcSave.action",saveItemData, importCalcInfo);
 		}
 
 		function importCalcInfo(json) {
@@ -360,8 +293,8 @@
 			$("#btnFace").attr("disabled", true);
 			$("#btnSave").attr("disabled", false);
 			$("#btnCalc0").attr("disabled", false);
-			$("#btnCalc1").attr("disabled", true);
-			$("#btnCalc2").attr("disabled", true);
+			$("#btnCalc1").attr("disabled", false);
+			$("#btnCalc2").attr("disabled", false);
 			$("#readele_diaBtn").attr("disabled", false);
 
 			$("#stext").attr("readonly", false);
@@ -406,6 +339,7 @@
 		}
 
 		function getPersonInfo(para){
+			$("#save").attr("disabled", false);
 			if (para == "readic" || event.keyCode == '13') {
 				var querystring = powersi.trim($("#querystring").val());
 				if (powersi.isnull(querystring)) {
@@ -423,35 +357,35 @@
 				/*  if('aac002'==$("#argName").val()){
 					checkIcCard(querystring);
 				} else {  */
-				if ("0" == $("#reduceflag").val())
-					getPerson();
-				else
-					afterChoosePerson();
-				/*  }  */
+				// if ("0" == $("#reduceflag").val())
+				getPerson();
+				// 	else
+				// 		afterChoosePerson();
+				// /*  }  */
 			}
 		}
 
 		function getPerson(para) {
-			var bka006 = powersi.trim($("#bka006").val());
-			if (powersi.isnull(bka006)) {
-				alert("请选择待遇类型再获取人员信息!");
-				return;
-			}
-			var querystring = powersi.trim($("#querystring").val());
-			if (powersi.isnull(querystring)) {
-				alert("请输入有效查询条件!");
-				return;
-			}
-			$("#bka006").val(bka006);
-			$("#bka006").change();
-			$("#querystring").val(querystring);
-			if (para == "readic") {
-				$("#argName").val("bka100");
-			} else {
-				$("#bke548").val('');
-			}
-			$("#querystring").attr("disabled", true);
-			var indi_id = "0";
+			// var bka006 = powersi.trim($("#bka006").val());
+			// if (powersi.isnull(bka006)) {
+			// 	alert("请选择待遇类型再获取人员信息!");
+			// 	return;
+			// }
+			// var querystring = powersi.trim($("#querystring").val());
+			// if (powersi.isnull(querystring)) {
+			// 	alert("请输入有效查询条件!");
+			// 	return;
+			// }
+			// $("#bka006").val(bka006);
+			// $("#bka006").change();
+			// $("#querystring").val(querystring);
+			// if (para == "readic") {
+			// 	$("#argName").val("bka100");
+			// } else {
+			// 	$("#bke548").val('');
+			// }
+			// $("#querystring").attr("disabled", true);
+			// var indi_id = "0";
 			postJSON(
 					"${rootPath}/diagnose/GetPersonInfoAction!getPersonInfo.action?diagnoseInfoDTO.arg_name="
 					+ $("#argName").val()
@@ -853,6 +787,8 @@
 				alert(resultMap.message);
 			}
 		}
+
+
 	</script>
 	</body>
 </powersi:html>

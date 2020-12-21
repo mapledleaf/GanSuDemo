@@ -40,7 +40,7 @@ import java.util.*;
 		@Result(name = "getPersonBusi", location = "/pages/biz/medicare/diagnose/chooseDiagnosebiz.jsp"),
 		@Result(name = "getPersonBusi_remote", location = "/pages/biz/medicare/diagnose/chooseDiagnosebiz_remote.jsp"),
 		@Result(name = "chooseperson", location = "/pages/biz/medicare/comm/ChoosePerson.jsp"),
-        @Result(name = "chargeretire", location = "/pages/biz/medicare/diagnose/Charge_retire.jsp") })
+		@Result(name = "chargeretire", location = "/pages/biz/medicare/diagnose/Charge_retire.jsp") })
 public class GetPersonInfoAction extends BaseAction {
 
 	private static final long serialVersionUID = 1L;
@@ -61,7 +61,7 @@ public class GetPersonInfoAction extends BaseAction {
 
 	@Autowired
 	private APIRemoteCallService aPIRemoteCallService;
-	
+
 	@SuppressWarnings("rawtypes")
 	public String chooseperson() {
 		try {
@@ -74,7 +74,7 @@ public class GetPersonInfoAction extends BaseAction {
 					String arg_value = diagnoseInfoDTO.getArg_value();
 					String arg_name = diagnoseInfoDTO.getArg_name();
 					if (!"bka100".equals(arg_name)&&!"qrcode".equals(arg_name)) {
-						 this.getQueryName(arg_value,arg_name);
+						this.getQueryName(arg_value,arg_name);
 					}
 					List lstPersonInfo = mCCEbizh110001Service.getPersonList(diagnoseInfoDTO);
 					if (lstPersonInfo == null) {
@@ -102,41 +102,46 @@ public class GetPersonInfoAction extends BaseAction {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public String getPersonInfo() {
+
 		try {
-			diagnoseInfoDTO.setAkb020(BizHelper.getAkb020());
-			diagnoseInfoDTO.setAkb021(BizHelper.getAkb021());
-			diagnoseInfoDTO.setAaa027(BizHelper.getAaa027());
-			String arg_value = diagnoseInfoDTO.getArg_value();
-			String arg_name = diagnoseInfoDTO.getArg_name();
-			if (!"bka100".equals(arg_name)&&!"qrcode".equals(arg_name)) {
-				 this.getQueryName(arg_value,arg_name);
-			}
-					
-			MCCEbizh110001Service mCCEbizh110001Service = this.hygeiaServiceManager.getBeanByClass(MCCEbizh110001ServiceImpl.class, diagnoseInfoDTO.getAkb020());
-			Map retMap = mCCEbizh110001Service.searchPersonInfo(diagnoseInfoDTO);
-			
-			List<Map> reMaps = (List<Map>) retMap.get("personinfo");
+//			diagnoseInfoDTO.setAkb020(BizHelper.getAkb020());
+//			diagnoseInfoDTO.setAkb021(BizHelper.getAkb021());
+//			diagnoseInfoDTO.setAaa027(BizHelper.getAaa027());
+//			String arg_value = diagnoseInfoDTO.getArg_value();
+//			String arg_name = diagnoseInfoDTO.getArg_name();
+//			if (!"bka100".equals(arg_name)&&!"qrcode".equals(arg_name)) {
+//				 this.getQueryName(arg_value,arg_name);
+//			}
+//
+//			MCCEbizh110001Service mCCEbizh110001Service = this.hygeiaServiceManager.getBeanByClass(MCCEbizh110001ServiceImpl.class, diagnoseInfoDTO.getAkb020());
+//			Map retMap = mCCEbizh110001Service.searchPersonInfo(diagnoseInfoDTO);
+
+//			List<Map> reMaps = (List<Map>) retMap.get("personinfo");
+			Map mapRow = newMap();
+			mapRow.put("aac002","430303196411220554");
+			mapRow.put("aac002","1073236");
+			mapRow.put("aac003","演示");
+			mapRow.put("aac004","1");
+			mapRow.put("aac006","200810");
+			mapRow.put("bka008","创智和宇");
+			mapRow.put("bacu18","100");
+//			mapRow.put("bka035","1");
+//			mapRow.put("bac001","1");
+//			mapRow.put("bka888","1");
+			mapRow.put("bka006","11");
+			mapRow.put("aaz217","20201221");
+			mapRow.put("bkz101","近视");
+
+
 			Map lmapReturn = new HashMap();
-			if (reMaps.size() == 1) {
-				Map mapRow = new HashMap();
-				this.beanService.copyProperties(reMaps.get(0), mapRow, true);
-				this.loadCodeValue(mapRow);
-				lmapReturn.put("personinfo", mapRow);
-				lmapReturn.put("spinfo", retMap.get("spinfo"));
-				lmapReturn.put("hospinfo", retMap.get("hospinfo"));
-				if(retMap.get("injuryorbirthinfo")!=null)
-					lmapReturn.put("injuryorbirthinfo", ((List<Map>)retMap.get("injuryorbirthinfo")).get(0));
-				this.setJSONReturn(lmapReturn);
-			} else if (reMaps.size() > 1) {
-				List<Map> mapRows = new ArrayList<Map>();
-				Map mapRow = null;
-				for (Map map : reMaps) {
-					mapRow = new HashMap();
-					this.beanService.copyProperties(map, mapRow, true);
-					mapRows.add(mapRow);
-				}
-				this.setJSONReturn("multi-row", mapRows);
-			}
+			lmapReturn.put("personinfo", mapRow);
+//			lmapReturn.put("spinfo", retMap.get("spinfo"));
+//			lmapReturn.put("hospinfo", retMap.get("hospinfo"));
+//			if(retMap.get("injuryorbirthinfo")!=null)
+//				lmapReturn.put("injuryorbirthinfo", ((List<Map>)retMap.get("injuryorbirthinfo")).get(0));
+			this.setJSONReturn(lmapReturn);
+
+
 		} catch (Exception e) {
 			String errLogSn = this.addErrSNInfo();
 			this.communalService.error(this.logger, e, new StringBuilder(errLogSn).append("入参:")
@@ -145,7 +150,7 @@ public class GetPersonInfoAction extends BaseAction {
 		}
 		return NONE;
 	}
-	
+
 	/**
 	 * 门慢取人员信息
 	 * @return
@@ -156,14 +161,14 @@ public class GetPersonInfoAction extends BaseAction {
 			diagnoseInfoDTO.setAkb020(BizHelper.getAkb020());
 			diagnoseInfoDTO.setAkb021(BizHelper.getAkb021());
 			diagnoseInfoDTO.setAaa027(BizHelper.getAaa027());
-			
+
 			String arg_value = diagnoseInfoDTO.getArg_value();
 			arg_value = arg_value.trim();
 			String arg_name = diagnoseInfoDTO.getArg_name();
 			if (!"bka100".equals(arg_name)&&!"qrcode".equals(arg_name)) {
-				 this.getQueryName(arg_value,arg_name);
+				this.getQueryName(arg_value,arg_name);
 			}
-			
+
 			MCCEbizh110001Service mCCEbizh110001Service = this.hygeiaServiceManager.getBeanByClass(MCCEbizh110001ServiceImpl.class, diagnoseInfoDTO.getAkb020());
 			Map retMap = mCCEbizh110001Service.searchPersonInfo(diagnoseInfoDTO);
 			List<Map> reMaps = (List<Map>) retMap.get("personinfo");
@@ -223,7 +228,7 @@ public class GetPersonInfoAction extends BaseAction {
 		return NONE;
 	}
 
-	
+
 	@SuppressWarnings("rawtypes")
 	public String getPersonBusi() {
 		try {
@@ -277,7 +282,7 @@ public class GetPersonInfoAction extends BaseAction {
 				diagnoseInfoDTO.setAac001(Long.parseLong(arg_value));
 			}else {
 				throw new HygeiaException("电脑号格式有误");
-			}		
+			}
 		} else if ("aac002".equals(arg_name)) {
 			diagnoseInfoDTO.setAac002(arg_value);
 		}else if ("aaz217".equals(arg_name)) {
@@ -292,7 +297,7 @@ public class GetPersonInfoAction extends BaseAction {
 		String bka888 = UtilFunc.getString(mapRow, "bka888");
 		mapRow.put("bka888", CodetableCacheMapping.getDisplayValue("bka888", bka888, bka888));
 	}
-	
+
 	/**
 	 * 持卡就诊
 	 * @param inHospitalDTO
@@ -309,8 +314,8 @@ public class GetPersonInfoAction extends BaseAction {
 		errLogSn = "错误号 " + errLogSn + " 信息： ";
 		return errLogSn;
 	}
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String addNotBlankParameters() {
 		Map allParameters = this.getAllParameters();
 		if (allParameters == null || allParameters.size() == 0) {
@@ -332,7 +337,7 @@ public class GetPersonInfoAction extends BaseAction {
 		}
 		return parameters.toString();
 	}
-    
+
 	public PersonMediBaseInfoDTO getpMediBaseInfoDTO() {
 		return pMediBaseInfoDTO;
 	}
@@ -348,55 +353,55 @@ public class GetPersonInfoAction extends BaseAction {
 	public void setDiagnoseInfoDTO(DiagnoseInfoDTO diagnoseInfoDTO) {
 		this.diagnoseInfoDTO = diagnoseInfoDTO;
 	}
-	
+
 	/**
 	 * TS19112600047      【需求开发】结算云（医院端）离休干部、荣残军人在门诊配送点消费时，系统自动弹出本次刷卡前一个月（刷卡日期往前一个月（30天））的消费记录，包含刷卡时间、金额、医疗机构，基金支付金额，个人自付金额
 	 * 新增方法获取30天消费记录
 	 * 赵银溪 20191201
 	 * 查询消费记录
-	 * 
+	 *
 	 * @return
 	 */
 	public String queryChargeretire() {
 		if (this.isPostRequest()) {
-				try {
-					PagerHelper.initPagination(this.getRequest());
-					diagnoseInfoDTO.setAkb020(BizHelper.getAkb020());
-					diagnoseInfoDTO.setAkb021(BizHelper.getAkb021());
-					diagnoseInfoDTO.setAaa027(BizHelper.getAaa027());
-					MCCEbizh120102Service mCCEbizh120102Service = getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120102ServiceImpl.class, diagnoseInfoDTO.getAkb020());
-		            String aac001 =		String.valueOf(diagnoseInfoDTO.getAac001())	;
-				    if(StringUtils.isEmpty(aac001)|| aac001.equals("0")){
+			try {
+				PagerHelper.initPagination(this.getRequest());
+				diagnoseInfoDTO.setAkb020(BizHelper.getAkb020());
+				diagnoseInfoDTO.setAkb021(BizHelper.getAkb021());
+				diagnoseInfoDTO.setAaa027(BizHelper.getAaa027());
+				MCCEbizh120102Service mCCEbizh120102Service = getHygeiaServiceManager()
+						.getBeanByClass(MCCEbizh120102ServiceImpl.class, diagnoseInfoDTO.getAkb020());
+				String aac001 =		String.valueOf(diagnoseInfoDTO.getAac001())	;
+				if(StringUtils.isEmpty(aac001)|| aac001.equals("0")){
 					throw new HygeiaException("请先查询人员信息");
-				    }
-			        List ChargeList = mCCEbizh120102Service.selectChargeList(diagnoseInfoDTO);
-		            int a =	 ChargeList.size();
-		            for(int i = 0;i < ChargeList.size(); i ++){
-		                	ChargeList.get(i); 
-		            }
-					PagerHelper.getPaginationObj().setCount(a);
-					DataGridHelper.render(this.getRequest(), this.getResponse(),
-					PagerHelper.getPaginatedList(ChargeList));		
-				}catch (Exception e) {
-					this.saveJSONError(e.getMessage());
 				}
-				return NONE;
-				
-				}else {
-					return "chargeretire";
-				}		
+				List ChargeList = mCCEbizh120102Service.selectChargeList(diagnoseInfoDTO);
+				int a =	 ChargeList.size();
+				for(int i = 0;i < ChargeList.size(); i ++){
+					ChargeList.get(i);
+				}
+				PagerHelper.getPaginationObj().setCount(a);
+				DataGridHelper.render(this.getRequest(), this.getResponse(),
+						PagerHelper.getPaginatedList(ChargeList));
+			}catch (Exception e) {
+				this.saveJSONError(e.getMessage());
+			}
+			return NONE;
+
+		}else {
+			return "chargeretire";
+		}
 	}
-	
+
 	public HygeiaServiceManager getHygeiaServiceManager() {
 		return hygeiaServiceManager;
 	}
 
 	/**
-	* 修改概要：NTS20050700380-生育、门特业务省内异地联网结算需求 -- 湘潭
-	* 修改描述：增加异地门特查人
-	* 修改人及修改时间：李嘉伦 2020/5/8
-	*/
+	 * 修改概要：NTS20050700380-生育、门特业务省内异地联网结算需求 -- 湘潭
+	 * 修改描述：增加异地门特查人
+	 * 修改人及修改时间：李嘉伦 2020/5/8
+	 */
 	public String getPersonInfo_special_remote(){
 		try{
 			diagnoseInfoDTO.setHospital_id(BizHelper.getAkb020());
@@ -485,21 +490,21 @@ public class GetPersonInfoAction extends BaseAction {
 		return "getPersonBusi_remote";
 	}
 	//异地门特生育业务查询费用信息
-    @SuppressWarnings({ "rawtypes" })
-    public String getPersonBusiDetail_remote() {
-        try {
-            DiagnoseInfoDTO diagnoseInfoDTO = new DiagnoseInfoDTO();
-            diagnoseInfoDTO.setHospital_id(BizHelper.getAkb020());
-            diagnoseInfoDTO.setSerial_no(getParameter("serial_no"));
-            diagnoseInfoDTO.setFee_batch(getParameter("fee_batch"));
-            Map bf = this.getPersonInfoService.getPersonBusiDetail_remote(diagnoseInfoDTO);
-            setJSONReturn(bf);
-        } catch (Exception e) {
-            String errLogSn = this.addErrSNInfo();
-            this.communalService.error(this.logger, e, new StringBuilder(errLogSn).append("入参:")
-                    .append(this.addNotBlankParameters()).append(":处理结果:").toString());
-            saveJSONError("查询人员业务明细信息出错！错误信息：" + errLogSn + e.getMessage());
-        }
-        return NONE;
-    }
+	@SuppressWarnings({ "rawtypes" })
+	public String getPersonBusiDetail_remote() {
+		try {
+			DiagnoseInfoDTO diagnoseInfoDTO = new DiagnoseInfoDTO();
+			diagnoseInfoDTO.setHospital_id(BizHelper.getAkb020());
+			diagnoseInfoDTO.setSerial_no(getParameter("serial_no"));
+			diagnoseInfoDTO.setFee_batch(getParameter("fee_batch"));
+			Map bf = this.getPersonInfoService.getPersonBusiDetail_remote(diagnoseInfoDTO);
+			setJSONReturn(bf);
+		} catch (Exception e) {
+			String errLogSn = this.addErrSNInfo();
+			this.communalService.error(this.logger, e, new StringBuilder(errLogSn).append("入参:")
+					.append(this.addNotBlankParameters()).append(":处理结果:").toString());
+			saveJSONError("查询人员业务明细信息出错！错误信息：" + errLogSn + e.getMessage());
+		}
+		return NONE;
+	}
 }
