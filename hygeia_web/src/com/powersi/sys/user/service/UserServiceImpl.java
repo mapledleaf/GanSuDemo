@@ -156,7 +156,22 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 				.getBean("memoryDBWrapper_core");
 		BizYyInfo yyInfo = (BizYyInfo) memoryDBWrapper.getMemoryDB().getMapValue("MAP_BIZ_YY_INFO", akb020);
 		if (yyInfo == null) {
-			throw new HygeiaException("memoryDB(MAP_BIZ_YY_INFO)找不到医院信息，编码：" + akb020);
+			yyInfo = new BizYyInfo();
+			yyInfo.setYybm("RC0044");
+			yyInfo.setAssist_uuid("4fe89533-36a3-4757-aa59-b34dea536b1a");
+			yyInfo.setYymc("演示");
+			yyInfo.setLb("11");
+			yyInfo.setLb_name("医院");
+			yyInfo.setYyjb("1");
+			yyInfo.setYyjb_name("一级");
+			yyInfo.setPassword("888888");
+			yyInfo.setValid_flag("1");
+			yyInfo.setLxr("创智和宇");
+			yyInfo.setLxdh("137888888");
+			yyInfo.setLxr("创智和宇");
+			yyInfo.setTcqbm("430399");
+			memoryDBWrapper.getMemoryDB().setMapValue("MAP_BIZ_YY_INFO","RC0044",yyInfo);
+//			throw new HygeiaException("memoryDB(MAP_BIZ_YY_INFO)找不到医院信息，编码：" + akb020);
 		}
 		if (StringUtils.isBlank(yyInfo.getYymc())) {
 			throw new HygeiaException("医院缓存医院名称为空，医院编码：" + akb020);
