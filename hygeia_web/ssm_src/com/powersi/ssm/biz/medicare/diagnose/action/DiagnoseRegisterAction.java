@@ -177,44 +177,62 @@ public class DiagnoseRegisterAction extends BaseAction {
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes" })
 	public String diagnoseCalcSave() {
+		Map map = getAllParameters();
 		String aka130Name = CodetableCacheMapping.getDisplayValue("aka130",diagnoseInfoDTO.getAka130(),"门诊");
+		String type =  getParameter("diagnoseInfoDTO.idType");
+		String tipStr = "试算成功！";
+		if("1".equals(type)){
+			tipStr = "收费成功！";
+		}
 		try {
-			diagnoseInfoDTO.setAkb020(BizHelper.getAkb020());
-			diagnoseInfoDTO.setAkb021(BizHelper.getAkb021());
-			diagnoseInfoDTO.setAae011(BizHelper.getLoginUser());
-			diagnoseInfoDTO.setBka015(BizHelper.getUserName());
-			diagnoseInfoDTO.setAae030(this.getDiagnoseInfoDTO().getAae030());
-			if(diagnoseInfoDTO.getAaa027()==null ||diagnoseInfoDTO.getAaa027()==""){
-				diagnoseInfoDTO.setAaa027(BizHelper.getAaa027());
-			}
-			if (StringUtils.isBlank(this.getDiagnoseInfoDTO().getBka020())
-					&& StringUtils.isNotBlank(this.getDiagnoseInfoDTO().getAkf001())) {
-				this.getDiagnoseInfoDTO().setBka020(this.getDiagnoseInfoDTO().getAkf001());
-			}
-			if (StringUtils.isBlank(this.getDiagnoseInfoDTO().getBka022())
-					&& StringUtils.isNotBlank(this.getDiagnoseInfoDTO().getBka021())) {
-				this.getDiagnoseInfoDTO().setBka022(this.getDiagnoseInfoDTO().getBka021());
-			}
-			String bka006 = this.getDiagnoseInfoDTO().getBka006();
-			if (StringUtils.isNotBlank(bka006)) {
-				this.getDiagnoseInfoDTO().setBka006_name(CodetableMapping.getDisplayValue("bka006", bka006, bka006));
-			}
-			String jsonFee = URLDecoder.decode(this.getParameter("feeinfo"), "UTF-8");
-			JSONArray jsonArray = JSONArray.fromObject(jsonFee);
-			List<Map> listFeeInfoDTORows = JSONArray.toList(jsonArray, new HashMap(), new JsonConfig());
-			for (int i = 0; listFeeInfoDTORows != null && i < listFeeInfoDTORows.size(); i++) {
-				listFeeInfoDTORows.get(i).put("bka063", BizHelper.getLoginUser());
-				listFeeInfoDTORows.get(i).put("bka064", BizHelper.getUserName());
-			}
-			List payinfoList = this.diagnoseRegisterService.diagnoseCalcSave(this.getDiagnoseInfoDTO(),
-					listFeeInfoDTORows);
-
-			/* TS19032800229 - 【需求开发】电子社保卡应用相关功能模块改造  如果是前台扫码结算修改提示信息  modified 675 2019年3月28日 */
-			if("2".equals(diagnoseInfoDTO.getEsscno())) {
-				this.setJSONReturn(aka130Name + "扫码支付成功!\n请通过渠道APP输入密码确认结算后再查询订单结果！", payinfoList);
-			}else {
-				this.setJSONReturn(aka130Name + "试算成功！", payinfoList);
-			}
+			List payinfoList = new ArrayList();
+			Map returnMap = new HashMap();
+			returnMap.put("allpay","1.00");
+			returnMap.put("akc264","1.00");
+			returnMap.put("bka832","1.00");
+			returnMap.put("bka831","1.00");
+			returnMap.put("cash_pay_own","1.00");
+			returnMap.put("akb067","1.00");
+			returnMap.put("akb066","1.00");
+			returnMap.put("bka842","1.00");
+			payinfoList.add(returnMap);
+			this.setJSONReturn(aka130Name + tipStr, payinfoList);
+//			diagnoseInfoDTO.setAkb020(BizHelper.getAkb020());
+//			diagnoseInfoDTO.setAkb021(BizHelper.getAkb021());
+//			diagnoseInfoDTO.setAae011(BizHelper.getLoginUser());
+//			diagnoseInfoDTO.setBka015(BizHelper.getUserName());
+//			diagnoseInfoDTO.setAae030(this.getDiagnoseInfoDTO().getAae030());
+//			if(diagnoseInfoDTO.getAaa027()==null ||diagnoseInfoDTO.getAaa027()==""){
+//				diagnoseInfoDTO.setAaa027(BizHelper.getAaa027());
+//			}
+//			if (StringUtils.isBlank(this.getDiagnoseInfoDTO().getBka020())
+//					&& StringUtils.isNotBlank(this.getDiagnoseInfoDTO().getAkf001())) {
+//				this.getDiagnoseInfoDTO().setBka020(this.getDiagnoseInfoDTO().getAkf001());
+//			}
+//			if (StringUtils.isBlank(this.getDiagnoseInfoDTO().getBka022())
+//					&& StringUtils.isNotBlank(this.getDiagnoseInfoDTO().getBka021())) {
+//				this.getDiagnoseInfoDTO().setBka022(this.getDiagnoseInfoDTO().getBka021());
+//			}
+//			String bka006 = this.getDiagnoseInfoDTO().getBka006();
+//			if (StringUtils.isNotBlank(bka006)) {
+//				this.getDiagnoseInfoDTO().setBka006_name(CodetableMapping.getDisplayValue("bka006", bka006, bka006));
+//			}
+//			String jsonFee = URLDecoder.decode(this.getParameter("feeinfo"), "UTF-8");
+//			JSONArray jsonArray = JSONArray.fromObject(jsonFee);
+//			List<Map> listFeeInfoDTORows = JSONArray.toList(jsonArray, new HashMap(), new JsonConfig());
+//			for (int i = 0; listFeeInfoDTORows != null && i < listFeeInfoDTORows.size(); i++) {
+//				listFeeInfoDTORows.get(i).put("bka063", BizHelper.getLoginUser());
+//				listFeeInfoDTORows.get(i).put("bka064", BizHelper.getUserName());
+//			}
+//			List payinfoList = this.diagnoseRegisterService.diagnoseCalcSave(this.getDiagnoseInfoDTO(),
+//					listFeeInfoDTORows);
+//
+//			/* TS19032800229 - 【需求开发】电子社保卡应用相关功能模块改造  如果是前台扫码结算修改提示信息  modified 675 2019年3月28日 */
+//			if("2".equals(diagnoseInfoDTO.getEsscno())) {
+//				this.setJSONReturn(aka130Name + "扫码支付成功!\n请通过渠道APP输入密码确认结算后再查询订单结果！", payinfoList);
+//			}else {
+//				this.setJSONReturn(aka130Name + "试算成功！", payinfoList);
+//			}
 
 		} catch (Exception e) {
 			String errLogSn = this.addErrSNInfo();
@@ -232,7 +250,7 @@ public class DiagnoseRegisterAction extends BaseAction {
 	}
 
 	/**
-	 * 支付宝渠道结算  
+	 * 支付宝渠道结算
 	 * @return
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes" })
@@ -336,33 +354,35 @@ public class DiagnoseRegisterAction extends BaseAction {
 	/**
 	 * 加载科室
 	 * @Title: loadBka019List
-	 * @param: @param bka019List      
+	 * @param: @param bka019List
 	 * @return: void
 	 */
 	@SuppressWarnings(value = { "unchecked","rawtypes"})
 	private void loadBka019List(Map bka019List){
-		try {
-			List<Map> hospList = this.diagnoseRegisterService.queryHospDept();
-			//获取科室信息
-			if(hospList != null && hospList.size() > 0){
-				for (Map map : hospList) {
-					bka019List.put(this.communalService.str(map, "bkc156", ""),
-							this.communalService.str(map, "bkc157", ""));
-				}
-			}
-		} catch (Exception e) {
-			String errLogSn = this.addErrSNInfo();
-			this.communalService.error(this.logger, e, new StringBuilder(errLogSn).append("入参:")
-					.append(this.addNotBlankParameters()).append(":处理结果:").toString());
-			this.saveJSONError(errLogSn+e.getMessage());
-		}
+		bka019List.put("bkc156","001");
+		bka019List.put("bkc157","眼科");
+//		try {
+//			List<Map> hospList = this.diagnoseRegisterService.queryHospDept();
+//			//获取科室信息
+//			if(hospList != null && hospList.size() > 0){
+//				for (Map map : hospList) {
+//					bka019List.put(this.communalService.str(map, "bkc156", ""),
+//							this.communalService.str(map, "bkc157", ""));
+//				}
+//			}
+//		} catch (Exception e) {
+//			String errLogSn = this.addErrSNInfo();
+//			this.communalService.error(this.logger, e, new StringBuilder(errLogSn).append("入参:")
+//					.append(this.addNotBlankParameters()).append(":处理结果:").toString());
+//			this.saveJSONError(errLogSn+e.getMessage());
+//		}
 
 	}
 
 	/**
 	 * 加载病区
 	 * @Title: loadBka021List
-	 * @param: @return      
+	 * @param: @return
 	 * @return: String
 	 */
 	@SuppressWarnings(value = { "unchecked","rawtypes"})
@@ -392,7 +412,7 @@ public class DiagnoseRegisterAction extends BaseAction {
 	/**
 	 * 加载医保医生
 	 * @Title: loadBka503List
-	 * @param: @return      
+	 * @param: @return
 	 * @return: String
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked"})
