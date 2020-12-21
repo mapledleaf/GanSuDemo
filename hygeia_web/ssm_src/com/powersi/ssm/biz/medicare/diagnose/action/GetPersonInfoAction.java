@@ -102,8 +102,15 @@ public class GetPersonInfoAction extends BaseAction {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public String getPersonInfo() {
+		Map map = getAllParameters();
+		String aac002 = getParameter("diagnoseInfoDTO.arg_value");
+		String type = getParameter("diagnoseInfoDTO.bka100");
 
+		if(!"460104198905130022".equals(aac002)){
+			throw new HygeiaException("无此人员信息");
+		}
 		try {
+
 //			diagnoseInfoDTO.setAkb020(BizHelper.getAkb020());
 //			diagnoseInfoDTO.setAkb021(BizHelper.getAkb021());
 //			diagnoseInfoDTO.setAaa027(BizHelper.getAaa027());
@@ -119,18 +126,26 @@ public class GetPersonInfoAction extends BaseAction {
 //			List<Map> reMaps = (List<Map>) retMap.get("personinfo");
 			Map mapRow = newMap();
 			mapRow.put("aac002","430303196411220554");
-			mapRow.put("aac002","1073236");
+			mapRow.put("aac001","1073236");
 			mapRow.put("aac003","演示");
 			mapRow.put("aac004","1");
 			mapRow.put("aac006","200810");
 			mapRow.put("bka008","创智和宇");
 			mapRow.put("bacu18","100");
-//			mapRow.put("bka035","1");
-//			mapRow.put("bac001","1");
-//			mapRow.put("bka888","1");
+			mapRow.put("bka035_name","1");
+			mapRow.put("bac001","000");
+			mapRow.put("bka888","正常");
 			mapRow.put("bka006","11");
 			mapRow.put("aaz217","20201221");
-			mapRow.put("bkz101","近视");
+//			mapRow.put("bkz101","近视");
+			mapRow.put("bka006","110");
+			mapRow.put("baa027_name","创智和宇");
+			if("2".equals(type)){
+				mapRow.put("akf001","眼科");
+				mapRow.put("bka021","一病区");
+				mapRow.put("ake022","李医生");
+			}
+
 
 
 			Map lmapReturn = new HashMap();

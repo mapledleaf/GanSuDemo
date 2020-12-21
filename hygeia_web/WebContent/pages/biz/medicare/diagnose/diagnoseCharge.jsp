@@ -70,8 +70,8 @@
 				<powersi:hidden id="btnVoucher" label="获取电子凭证" onclick="callScanMachine()" disabled="false" />
 				<!--  end  -->
 
-				<powersi:button id="btnCalc0" key="button_calc0" onclick="calc(0);" disabled="false" />
-				<powersi:button id="btnCalc1" key="button_calc1" onclick="calc(1);" disabled="false" />
+				<powersi:button id="btnCalc0" key="button_calc0" onclick="calc(0);" disabled="true" />
+				<powersi:button id="btnCalc1" key="button_calc1" onclick="calc(1);" disabled="true" />
 				<powersi:hidden id="btnCalc2" label="扫码结算" onclick="calc(2);" disabled="true" />
 				<powersi:hidden id="readele_diaBtn" key="扫码" />
 				<powersi:hidden id="btnFace" key="人脸采集" disabled="true" onclick="javascript:doPhoto();" />
@@ -98,7 +98,72 @@
 				</powersi:editorlayout-row>
 			</powersi:editorlayout>
 		</powersi:panelbox>
-		<tags:mediBizInfo_diagnose />
+		<powersi:editorlayout cols="9%,16%,9%,16%,9%,16%,10%,15%">
+			<tr>
+
+				<powersi:textfield id="bacu18" name="diagnoseInfoDTO.bacu18" key="个人账户余额"
+								   readonly="true" cssStyle="color:red;" />
+				<powersi:codeselect id="bka035" name="diagnoseInfoDTO.bka035_name" key="人员类别"
+									headerKey="0" headerValue="" codeType="bka035" disabled="true" />
+				<powersi:hidden id="bka035" name="diagnoseInfoDTO.bka035" />
+				<powersi:textfield id="aac004" key="性别" name="diagnoseInfoDTO.aac004_name"
+								   headerKey="0" headerValue="" codeType="aac004" disabled="true" />
+				<powersi:hidden id="aac004" name="diagnoseInfoDTO.aac004" />
+				<powersi:textfield id="aac006" key="出生日期"
+								   name="diagnoseInfoDTO.aac006" readonly="true" />
+			</tr>
+			<tr>
+				<powersi:textfield id="baa027_name" name="diagnoseInfoDTO.aac004_name" key="所属中心"
+								   readonly="true"/>
+				<powersi:hidden id="baa027" name="diagnoseInfoDTO.baa027" />
+				<powersi:codeselect id="bac001" key="公务员级别" name="diagnoseInfoDTO.bac001"
+									headerKey="0" headerValue="" codeType="bac001" disabled="true" />
+				<powersi:hidden id="bac001" name="diagnoseInfoDTO.bac001" />
+				<powersi:textfield id="bka888" key="基金冻结情况" name="diagnoseInfoDTO.bka888"
+								   readonly="true"/>
+				<powersi:textfield id="aac001" name="diagnoseInfoDTO.aac001"
+								   label="电脑号" readonly="true" value=""/>
+			</tr>
+			<tr>
+				<powersi:codeselect id="bka006" name="diagnoseInfoDTO.bka006" key="待遇类型"
+									codeType="bka006"
+									disabled="true" />
+				<powersi:textfield id="aae030" name="diagnoseInfoDTO.aae030" mask="date"
+								   key="门诊日期" onKeyDown="keyDown(this)" readonly="true"/>
+				<powersi:textfield id="aaz217" key="就医登记号"
+								   name="diagnoseInfoDTO.aaz217" readonly="true" />
+				<powersi:textfield id="aae005" key="联系电话"
+								   name="diagnoseInfoDTO.aae005" readonly="true" />
+			</tr>
+			<tr>
+				<powersi:textfield id="bkz101" key="疾病诊断" readonly="true"
+								   name="diagnoseInfoDTO.bkz101" buttonText="..." buttonId="disinse"
+								   onKeyDown="keyDown(this)" onbuttonclick="chooseDis('bka026')"
+								   required="true" value="普通疾病"/>
+				<powersi:textfield id="akf001" name="diagnoseInfoDTO.akf001"
+								   key="科室" readonly="true" />
+				<powersi:textfield id="bka021" name="diagnoseInfoDTO.bka021"
+								   key="病区"  readonly="true" disabled="true"/>
+				<powersi:textfield id="ake022" name="diagnoseInfoDTO.ake022"
+								   key="医保医师" readonly="true"  disabled="true"/>
+			</tr>
+			<powersi:hidden id="bka006_reg" name="diagnoseInfoDTO.bka006" />
+			<powersi:hidden id="aab001" key="单位电脑号" name="diagnoseInfoDTO.aab001" />
+			<powersi:hidden id="aab019" name="diagnoseInfoDTO.aab019" />
+			<powersi:hidden id="aaz267" key="选点序列号" name="diagnoseInfoDTO.aaz267" />
+			<powersi:hidden id="aka130" name="diagnoseInfoDTO.aka130"
+							key="aka130" value="11" />
+			<powersi:hidden id="aae140" name="diagnoseInfoDTO.aae140" key="险种" />
+			<powersi:hidden id="bka001" key="费用批次" name="diagnoseInfoDTO.bka001" />
+			<powersi:hidden id="bka039" key="完成情况" name="diagnoseInfoDTO.bka039" />
+			<powersi:hidden id="akc193" name="diagnoseInfoDTO.akc193" value="00000" />
+			<powersi:hidden id="bka022" key="病区名称" name="diagnoseInfoDTO.bka022" />
+			<powersi:hidden id="bka020" key="科室名称" name="diagnoseInfoDTO.bka020" />
+			<powersi:hidden id="bka016" name="diagnoseInfoDTO.bka016" />
+			<powersi:hidden id="bka011" name="diagnoseInfoDTO.bka011" />
+			<powersi:hidden id="bka012" name="diagnoseInfoDTO.bka012" />
+			<powersi:hidden id="kc21id" key="主键" name="diagnoseInfoDTO.kc21id" />
+		</powersi:editorlayout>
 		<tags:mediFeeInfo_datagrid />
 		<tags:mediHisPayInfo/>
 		<powersi:hidden id="reduceflag" key="退改费类型" name="diagnoseInfoDTO.reduceflag" value="0" />
@@ -146,6 +211,9 @@
 		/* TS19032800229 - 【需求开发】电子社保卡应用相关功能模块改造  默认不扫码结算  modified 675 2019年3月28日  */
 		window.onload = function() {
 			$("#btnCalc2").hide();
+			$("#aae030").val('<%=DateFunc.dateToString(new Date(), "yyyyMMdd")%>');
+			$("#ake007").val('<%=DateFunc.dateToString(new Date(), "yyyyMMdd")%>');
+			$("#bka006").val("110");
 		}
 
 		function dealoperFlag() {
@@ -402,7 +470,7 @@
 					+ "&diagnoseInfoDTO.bke548="
 					+ $("#bke548").val()
 					+ "&diagnoseInfoDTO.bka100="
-					+ $("#bka100").val()
+					+ "2"
 					+ "&diagnoseInfoDTO.bkz300="
 					+ $("#bkz300").val(),
 					function(json) {
