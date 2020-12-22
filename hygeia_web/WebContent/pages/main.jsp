@@ -36,7 +36,7 @@ import="com.powersi.hygeia.framework.GlobalContext,com.powersi.hygeia.framework.
 	if (loginId == null || loginId.trim().length() == 0) {
 		loginId = "";
 	}
-	String akb021 = com.powersi.ssm.biz.medicare.common.util.BizHelper.getAkb021();
+	String akb021 = "XXX中心医院";//com.powersi.ssm.biz.medicare.common.util.BizHelper.getAkb021();
 	String akb020 = com.powersi.ssm.biz.medicare.common.util.BizHelper.getAkb020();
 	if (akb021 == null) {
 		akb021 = "";

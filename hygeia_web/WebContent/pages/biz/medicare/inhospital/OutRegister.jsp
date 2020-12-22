@@ -1,7 +1,16 @@
+<%@page import="com.powersi.ssm.biz.medicare.common.util.BizHelper"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="powersi" uri="http://www.powersi.com.cn/tags"%>
 <powersi:html>
+	<%
+		String loginUser = BizHelper.getLoginUser().toUpperCase();
+		if (loginUser.endsWith("TEST")) {
+			request.setAttribute("argName", "#{'aac001':'电脑号','akc190':'住院号','aac002':'社会保障号','aaz217':'就医登记号' }");
+		} else {
+			request.setAttribute("argName", "#{'aac002':'社会保障号' }");
+		}
+	%>
 <head>
 <powersi:head title="出院登记" />
 <style>
@@ -27,20 +36,21 @@
 					onclick="resetOutRegister()" />
 				<powersi:reset id="btReset" label="重置" cssStyle="display:none;" />
 			</powersi:panelbox-toolbar>
-			<powersi:editorlayout cols="8%,17%,8%,17%,8%,17%,8%,17%">
+            <powersi:editorlayout cols="10%,10%,15%,8%,12%,8%,12%,10%,15%">
 				<powersi:editorlayout-row>
-					<powersi:textfield id="querystring"
-						name="inHospitalDTO.querystring" label="" title="请输入信息回车"
-						placeholder="请输入信息回车" readonly="false"
-						onkeydown="findOutRegisterAaz217()" buttonText="读卡"
-						buttonId="readic_button" buttonDisabled="false"
-						onbuttonclick="readic()" />
+					<powersi:codeselect id="argName" name="inHospitalDTO.argName"
+										label="" cssClass="select2" list="${argName }" />
+					<td><powersi:textfield id="querystring"
+										   name="inHospitalDTO.querystring" title="请输入信息回车"
+										   placeholder="请输入信息回车！" readonly="false" onkeyup="findOutRegisterAaz217()"
+										   buttonText="读卡" buttonId="readic_button" buttonDisabled="false" />
+					</td>
 					<powersi:textfield id="aac002" name="inHospitalDTO.aac002"
-						label="社会保障号码" readonly="true" />
-					<powersi:textfield id="aac001" name="inHospitalDTO.aac001"
-						label="电脑号" readonly="true" />
+									   label="社会保障号" readonly="true" />
+					<powersi:textfield id="bka008" name="inHospitalDTO.bka008"
+									   label="单位名称" readonly="true" />
 					<powersi:textfield id="aac003" name="inHospitalDTO.aac003"
-						label="姓名" readonly="true" />
+									   label="姓名" readonly="true" />
 				</powersi:editorlayout-row>
 			</powersi:editorlayout>
 		</powersi:panelbox>
@@ -129,9 +139,9 @@
 						cssClass="select2" showValue="true" />
 				</powersi:editorlayout-row>
 				<powersi:editorlayout-row>
-					<powersi:codeselect id="bkf004" name="inHospitalDTO.bkf004"
-						label="出院转归情况" codeType="bkf004" required="true"
-						displayonly="false" cssClass="select2" showValue="true" />
+<%--					<powersi:codeselect id="bkf004" name="inHospitalDTO.bkf004"--%>
+<%--						label="出院转归情况" codeType="bkf004" required="true"--%>
+<%--						displayonly="false" cssClass="select2" showValue="true" />--%>
 					<powersi:textfield id="bkf005" name="inHospitalDTO.bkf005"
 						label="抢救次数" readonly="false" />
 					<powersi:textfield id="bkf006" name="inHospitalDTO.bkf006"
@@ -358,12 +368,16 @@
 			if (window.event.keyCode == 13) {
 				$("#bke548").val("");
 				var querystring = powersi.trim($("#querystring").val());
+				var argName = $("#argName").val();
 				if (powersi.isnull(querystring)) {
 					return;
 				}
 				postJSON(
-						"${rootPath}/inhospital/InhospitalManagerAction!findOutRegisterAaz217.action?inHospitalDTO.querystring="
-								+ querystring, function(json) {
+						"${rootPath}/inhospital/InhospitalManagerAction!findOutRegisterAaz217.action",
+				{
+					"inHospitalDTO.querystring" : querystring,
+						"inHospitalDTO.argName" : argName
+				}, function(json) {
 							if (!checkJSONResult(json)) {
 								return;
 							}

@@ -106,7 +106,7 @@ public class GetPersonInfoAction extends BaseAction {
 		String aac002 = getParameter("diagnoseInfoDTO.arg_value");
 		String type = getParameter("diagnoseInfoDTO.bka100");
 
-		if(!"460104198905130022".equals(aac002)){
+		if(!"430303196411220554".equals(aac002)){
 			throw new HygeiaException("无此人员信息");
 		}
 		try {

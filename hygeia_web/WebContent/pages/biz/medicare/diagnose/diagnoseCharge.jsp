@@ -52,9 +52,9 @@
 				  action="DiagnoseRegisterAction!register.action">
 		<powersi:panelbox key="查询条件" allowCollapse="false">
 			<powersi:panelbox-toolbar>
-				<powersi:radio id="operFlag" name="operFlag"
-							   list="#{'1': '收费操作 ', '2':'改费操作'}" value='1' colspan="2"
-							   onclick="dealoperFlag()" />
+<%--				<powersi:radio id="operFlag" name="operFlag"--%>
+<%--							   list="#{'1': '收费操作 ', '2':'改费操作'}" value='1' colspan="2"--%>
+<%--							   onclick="dealoperFlag()" />--%>
 				<!--  【NTS20050800118】电子凭证动态库开发 唤醒扫码机 by 钟声 20200505 -->
 				<%--                <div id="operFlag">--%>
 				<%--                    <td>电子凭证</td>--%>

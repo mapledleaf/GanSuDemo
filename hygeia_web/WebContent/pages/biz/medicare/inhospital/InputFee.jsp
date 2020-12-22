@@ -32,8 +32,8 @@
 					key="button_save_register" />
 				<powersi:button id="btTryCalcTreat" label="试算费用"
 					onclick="tryCalcTreat()" key="button_calc0" />
-				<powersi:button id="btFundStatusQuery" label="基金状态"
-					onclick="fundStatusQuery()" key="button_query" />
+<%--				<powersi:button id="btFundStatusQuery" label="基金状态"--%>
+<%--					onclick="fundStatusQuery()" key="button_query" />--%>
 				<powersi:button id="btFeeReset" label="重置" onclick="feeReset()"
 					key="button_reset" />
 			</powersi:panelbox-toolbar>

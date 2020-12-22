@@ -433,11 +433,11 @@
 				$("#querystring").val(querystring);
 				$("#argName").val(argName);
 				$("#argName").change();
- 				if('aac002'==argName){//如果是身份证获取人员信息，需先校验身份信息
- 					checkIcCard(querystring);
- 				}else{
+ 				// if('aac002'==argName){//如果是身份证获取人员信息，需先校验身份信息
+ 				// 	checkIcCard(querystring);
+ 				// }else{
 					getPerson(querystring);
- 				}
+ 				// }
 			}
 		}
 
@@ -480,13 +480,14 @@
 									$("#" + key).val(value);
 								}
 								if(key=="bka888_name"){
+								    $("#bka888_name").val("正常");
 									//alert(JSON.stringify(json.data));
 									//return;
-									if(value!="正常") {
-										//TS19051400133 结算云（医院端）-  （门诊业务管理、住院业务管理、生育住院管理、家庭病床管理、异地就医管理）-  
-										//办业务读卡后，如果此人的基金是冻结状态，则弹出一个提示框提示一下这个人基金冻结 cj 20190515
-										popupAlert("您好!此参保人基金冻结状态为【已冻结】,将不能进行基金报销,请知悉!");
-									}
+									// if(value!="正常") {
+									// 	//TS19051400133 结算云（医院端）-  （门诊业务管理、住院业务管理、生育住院管理、家庭病床管理、异地就医管理）-
+									// 	//办业务读卡后，如果此人的基金是冻结状态，则弹出一个提示框提示一下这个人基金冻结 cj 20190515
+									// 	popupAlert("您好!此参保人基金冻结状态为【已冻结】,将不能进行基金报销,请知悉!");
+									// }
 								}
 							});
 						}

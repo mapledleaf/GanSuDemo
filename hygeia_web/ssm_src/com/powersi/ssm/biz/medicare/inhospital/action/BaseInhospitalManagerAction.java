@@ -402,7 +402,7 @@ public class BaseInhospitalManagerAction extends BaseAction {
 	 */
 	public void initCtrlInHospitalDTO(String aka130Code) {
 		this.getInHospitalDTO().setAkb020(BizHelper.getAkb020());
-		this.getInHospitalDTO().setAkb021(BizHelper.getAkb021());
+		this.getInHospitalDTO().setAkb021("XXX中心医院");
 		this.getInHospitalDTO().setAae011(BizHelper.getLoginUser());
 		this.getInHospitalDTO().setBka015(BizHelper.getUserName());
 		this.getInHospitalDTO().setAae036(new Date());

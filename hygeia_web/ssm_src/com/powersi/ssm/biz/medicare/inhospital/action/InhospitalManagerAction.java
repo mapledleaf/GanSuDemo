@@ -10,7 +10,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.alibaba.dubbo.common.utils.CollectionUtils;
+import com.powersi.ssm.biz.medicare.common.util.GanSuDemoUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
@@ -629,9 +632,11 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 						this.getInHospitalDTO().setAka241("0");
 					}
 					
-					MCCEbizh120103Service mCCEbizh120103Service = this.getHygeiaServiceManager()
-							.getBeanByClass(MCCEbizh120103ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-					InHospitalDTO inHospitalDTOTemp = mCCEbizh120103Service.saveRegisterInfo(this.getInHospitalDTO());
+//					MCCEbizh120103Service mCCEbizh120103Service = this.getHygeiaServiceManager()
+//							.getBeanByClass(MCCEbizh120103ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+//					InHospitalDTO inHospitalDTOTemp = mCCEbizh120103Service.saveRegisterInfo(this.getInHospitalDTO());
+					this.getInHospitalDTO().setAaz217("SN20201221");
+					InHospitalDTO inHospitalDTOTemp = GanSuDemoUtils.saveRegisterInfo(this.getInHospitalDTO());
 
 					this.getBeanService().copyProperties(inHospitalDTOTemp, this.getInHospitalDTO(), true);
 					this.setJSONReturn("[" + this.getInHospitalDTO().getAac003() + "]的住院登记保存成功！!",
@@ -1180,12 +1185,14 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 			if ("bka100".equals(this.getInHospitalDTO().getArgName())) {
 				this.getInHospitalDTO().setBka100(this.getInHospitalDTO().getQuerystring());
 			}
-			MCCEbizh120001Service mCCEbizh120001Service = this.getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120001ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-			List<InHospitalDTO> inHospitalDTORows = mCCEbizh120001Service.searchPersonInfo(this.getInHospitalDTO());
-
+//			MCCEbizh120001Service mCCEbizh120001Service = this.getHygeiaServiceManager()
+//					.getBeanByClass(MCCEbizh120001ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+			//List<InHospitalDTO> inHospitalDTORows = mCCEbizh120001Service.searchPersonInfo(this.getInHospitalDTO());
+			String aac002 = this.getInHospitalDTO().getAac002();
+			List<InHospitalDTO> inHospitalDTORows = GanSuDemoUtils.PERSON_INFO.stream()
+					.filter(inHospitalDTO -> aac002.equals(inHospitalDTO.getAac002())).collect(Collectors.toList());
 			if (UtilFunc.isEmpty(inHospitalDTORows)) {
-				return NONE;
+				throw new HygeiaException("人员信息不存在！");
 			}
 			if (inHospitalDTORows.size() == 1) {
 				this.getBeanService().copyProperties(inHospitalDTORows.get(0), this.getInHospitalDTO(), true);
@@ -1883,7 +1890,7 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 					this.getInHospitalDTO().setBka034(BizHelper.getUserName());
 					MCCEbizh120105Service mCCEbizh120105Service = this.getHygeiaServiceManager()
 							.getBeanByClass(MCCEbizh120105Service.class, this.getInHospitalDTO().getAkb020());
-					InHospitalDTO inHospitalDTOTemp = mCCEbizh120105Service.outRegister(this.getInHospitalDTO());
+					InHospitalDTO inHospitalDTOTemp = this.getInHospitalDTO();//mCCEbizh120105Service.outRegister(this.getInHospitalDTO());
 					this.getBeanService().copyProperties(inHospitalDTOTemp, this.getInHospitalDTO(), true);
 					this.setJSONReturn("[" + this.getInHospitalDTO().getAac003() + "]的出院登记保存成功！",
 							this.getInHospitalDTO());
@@ -2643,9 +2650,11 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 		try {
 			this.initCtrlInHospitalDTO(aka130_12);
 			this.getInHospitalDTO().setBka438(bka438_3);
-			MCCEbizh120102Service mCCEbizh120102Service = this.getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120102ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-			InHospitalDTO inHospitalDTOTemp = mCCEbizh120102Service.queryAaz217(this.getInHospitalDTO());
+//			MCCEbizh120102Service mCCEbizh120102Service = this.getHygeiaServiceManager()
+//					.getBeanByClass(MCCEbizh120102ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+//			InHospitalDTO inHospitalDTOTemp = mCCEbizh120102Service.queryAaz217(this.getInHospitalDTO());
+
+			InHospitalDTO inHospitalDTOTemp = GanSuDemoUtils.queryAaz217(this.getInHospitalDTO());
 			this.getBeanService().copyProperties(inHospitalDTOTemp, this.getInHospitalDTO(), true);
 			this.loadHidDataAndItemName();
 			this.setJSONReturn(this.getInHospitalDTO());
@@ -2844,9 +2853,10 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 		try {
 			this.initCtrlInHospitalDTO(aka130_12);
 			this.getInHospitalDTO().setBka438(bka438_2);
-			MCCEbizh120102Service mCCEbizh120102Service = this.getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120102ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-			InHospitalDTO inHospitalDTOTemp = mCCEbizh120102Service.queryAaz217(this.getInHospitalDTO());
+//			MCCEbizh120102Service mCCEbizh120102Service = this.getHygeiaServiceManager()
+//					.getBeanByClass(MCCEbizh120102ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+//			InHospitalDTO inHospitalDTOTemp = mCCEbizh120102Service.queryAaz217(this.getInHospitalDTO());
+			InHospitalDTO inHospitalDTOTemp = GanSuDemoUtils.queryAaz217(this.getInHospitalDTO());
 			this.getBeanService().copyProperties(inHospitalDTOTemp, this.getInHospitalDTO(), true);
 			this.loadHidDataAndItemName();
 			this.setJSONReturn(this.getInHospitalDTO());
@@ -3353,11 +3363,11 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 						inHospitalDTORow.setBka064(BizHelper.getUserName());
 						inHospitalDTORow.setBka065(DateFunc.dateToString(DateFunc.getDate(), "yyyyMMdd"));
 					}
-					MCCEbizh120002Service mCCEbizh120002Service = this.getHygeiaServiceManager()
-							.getBeanByClass(MCCEbizh120002ServiceImpl.class, getInHospitalDTO().getAkb020());
-					InHospitalDTO inHospitalDTOTemp = mCCEbizh120002Service.checkAndSaveFeeInfo(this.getInHospitalDTO(),
-							inHospitalDTORows);
-
+//					MCCEbizh120002Service mCCEbizh120002Service = this.getHygeiaServiceManager()
+//							.getBeanByClass(MCCEbizh120002ServiceImpl.class, getInHospitalDTO().getAkb020());
+//					InHospitalDTO inHospitalDTOTemp = mCCEbizh120002Service.checkAndSaveFeeInfo(this.getInHospitalDTO(),
+//							inHospitalDTORows);
+					InHospitalDTO inHospitalDTOTemp = GanSuDemoUtils.saveFeeInfo(inHospitalDTORows);
 					this.getBeanService().copyProperties(inHospitalDTOTemp, this.getInHospitalDTO(), true);
 					this.setJSONReturn("费用明细保存成功！", this.getInHospitalDTO());
 				} catch (Throwable e) {
@@ -3721,9 +3731,10 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 			this.initCtrlInHospitalDTO(aka130_12);
 			this.validateaaz217();
 			this.getInHospitalDTO().setBka438(bka438_1);
-			MCCEbizh120102Service mCCEbizh120102Service = this.getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120102ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-			InHospitalDTO inHospitalDTOTemp = mCCEbizh120102Service.queryAaz217(this.getInHospitalDTO());
+//			MCCEbizh120102Service mCCEbizh120102Service = this.getHygeiaServiceManager()
+//					.getBeanByClass(MCCEbizh120102ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+//			InHospitalDTO inHospitalDTOTemp = mCCEbizh120102Service.queryAaz217(this.getInHospitalDTO());
+			InHospitalDTO inHospitalDTOTemp = GanSuDemoUtils.queryAaz217(this.getInHospitalDTO());
 			this.getBeanService().copyProperties(inHospitalDTOTemp, this.getInHospitalDTO(), true);
 			this.loadHidDataAndItemName();
 			this.setJSONReturn(this.getInHospitalDTO());
@@ -3963,13 +3974,23 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 			this.getInHospitalDTO().setCurrentPage(PagerHelper.getPaginationObj().getPageIndex());
 			this.getInHospitalDTO().setPageSize(PagerHelper.getPaginationObj().getPageSize());
 			this.loadHidDataAndItemName();
-			MCCEbizh120203Service mCCEbizh120203Service = this.getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120203ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-			ListResult listResult = mCCEbizh120203Service.querySavedFee(this.getInHospitalDTO());
-			if (listResult == null) {
-				return NONE;
+//			MCCEbizh120203Service mCCEbizh120203Service = this.getHygeiaServiceManager()
+//					.getBeanByClass(MCCEbizh120203ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+//			ListResult listResult = mCCEbizh120203Service.querySavedFee(this.getInHospitalDTO());
+//			if (listResult == null) {
+//				return NONE;
+//			}
+//			List<Map> inHospitalDTORows = (List<Map>) listResult.getList();
+			List<InHospitalDTO> tempRows = GanSuDemoUtils.getFeeInfo();
+			List<Map> inHospitalDTORows = new ArrayList<>();
+			if(CollectionUtils.isNotEmpty(tempRows)) {
+				for (InHospitalDTO tempRow : tempRows) {
+					Map m = new HashMap();
+					this.getBeanService().copyProperties(tempRow, m, true);
+					inHospitalDTORows.add(m);
+				}
 			}
-			List<Map> inHospitalDTORows = (List<Map>) listResult.getList();		
+
 			//修改概要：TS19083000214 - 【需求开发】结算云住院费用录入时，点击保存费用后药品信息（等级和规格消失了）
 			//修改描述：这里实际已经处理了aka065的展示数据，但是没有正确返回，调整一下
 			//修改人及修改时间：李嘉伦 20190903
@@ -4009,7 +4030,7 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 				}
 				this.getBeanService().copyProperties(inHospitalDTOTemp, inHospitalDTORows.get(i), true);
 			}
-			PagerHelper.getPaginationObj().setCount(listResult.getCount());
+			PagerHelper.getPaginationObj().setCount(1);
 			DataGridHelper.render(this.getRequest(), this.getResponse(),
 					PagerHelper.getPaginatedList(inHospitalDTORows));
 		} catch (Throwable e) {
@@ -4182,10 +4203,10 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 		try {
 			this.initCtrlInHospitalDTO(aka130_12);
 			this.getInHospitalDTO().setBka438(bka438_1);
-			MCCEbizh120003Service mCCEbizh120003Service = this.getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120003ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-			InHospitalDTO inHospitalDTOTemp = mCCEbizh120003Service.checkAndCalcFeeInfo(this.getInHospitalDTO());
-
+//			MCCEbizh120003Service mCCEbizh120003Service = this.getHygeiaServiceManager()
+//					.getBeanByClass(MCCEbizh120003ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+			//InHospitalDTO inHospitalDTOTemp = mCCEbizh120003Service.checkAndCalcFeeInfo(this.getInHospitalDTO());
+			InHospitalDTO inHospitalDTOTemp = GanSuDemoUtils.tryCheckout(this.getInHospitalDTO());
 			this.getBeanService().copyProperties(inHospitalDTOTemp, this.getInHospitalDTO(), true);
 			this.setJSONReturn(this.getInHospitalDTO());
 		} catch (Throwable e) {
@@ -4529,9 +4550,10 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 			this.getInHospitalDTO().setBka046(BizHelper.getLoginUser());
 			this.getInHospitalDTO().setBka047(BizHelper.getUserName());
 
-			MCCEbizh120003Service mCCEbizh120003Service = this.getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120003ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-			InHospitalDTO inHospitalDTOTemp = mCCEbizh120003Service.checkAndCalcFeeInfo(this.getInHospitalDTO());
+//			MCCEbizh120003Service mCCEbizh120003Service = this.getHygeiaServiceManager()
+//					.getBeanByClass(MCCEbizh120003ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+//			InHospitalDTO inHospitalDTOTemp = mCCEbizh120003Service.checkAndCalcFeeInfo(this.getInHospitalDTO());
+			InHospitalDTO inHospitalDTOTemp = GanSuDemoUtils.tryCheckout(this.getInHospitalDTO());
 
 			this.getBeanService().copyProperties(inHospitalDTOTemp, this.getInHospitalDTO(), true);
 			this.setJSONReturn(this.getInHospitalDTO());
@@ -4877,9 +4899,10 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 					this.getInHospitalDTO().setBka047(BizHelper.getUserName());
 					this.getInHospitalDTO().setAae014(BizHelper.getLoginUser());
 					this.getInHospitalDTO().setBka034(BizHelper.getUserName());
-					MCCEbizh120106Service mCCEbizh120106Service = this.getHygeiaServiceManager()
-							.getBeanByClass(MCCEbizh120106ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-					InHospitalDTO inHospitalDTOTemp = mCCEbizh120106Service.outCharge(this.getInHospitalDTO());
+//					MCCEbizh120106Service mCCEbizh120106Service = this.getHygeiaServiceManager()
+//							.getBeanByClass(MCCEbizh120106ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+//					InHospitalDTO inHospitalDTOTemp = mCCEbizh120106Service.outCharge(this.getInHospitalDTO());
+					InHospitalDTO inHospitalDTOTemp = GanSuDemoUtils.checkout(this.getInHospitalDTO());
 
 					this.getBeanService().copyProperties(inHospitalDTOTemp, this.getInHospitalDTO(), true);
 					this.setJSONReturn("[" + this.getInHospitalDTO().getAac003() + "]的出院结算保存成功！",
@@ -4955,9 +4978,10 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 		try {
 			this.initCtrlInHospitalDTO();
 			this.loadHidDataAndItemName();
-			MCCEbizh120312Service mCCEbizh120312Service = this.getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120312ServiceImpl.class, this.getInHospitalDTO().getAkb020());
-			List<FundPayInfoDTO> fundPayInfoDTORows = mCCEbizh120312Service.queryFundPay(this.getInHospitalDTO());
+//			MCCEbizh120312Service mCCEbizh120312Service = this.getHygeiaServiceManager()
+//					.getBeanByClass(MCCEbizh120312ServiceImpl.class, this.getInHospitalDTO().getAkb020());
+//			List<FundPayInfoDTO> fundPayInfoDTORows = mCCEbizh120312Service.queryFundPay(this.getInHospitalDTO());
+			List<FundPayInfoDTO> fundPayInfoDTORows = GanSuDemoUtils.queryFundPay(this.getInHospitalDTO());
 			if (UtilFunc.isEmpty(fundPayInfoDTORows)) {
 				return NONE;
 			}
@@ -5308,9 +5332,10 @@ public class InhospitalManagerAction extends BaseInhospitalManagerAction {
 	public String loadDiagnoseInfos() {
 		try {
 			String aaz217 = getParameter("aaz217");
-			MCCEbizh120102Service mCCEbizh120102Service = this.getHygeiaServiceManager()
-					.getBeanByClass(MCCEbizh120102ServiceImpl.class, BizHelper.getAkb020());
-			List<Kcg4DTO> kcg4DTO = mCCEbizh120102Service.loadDiagnoseInfosByAaz217(aaz217, BizHelper.getAkb020());
+//			MCCEbizh120102Service mCCEbizh120102Service = this.getHygeiaServiceManager()
+//					.getBeanByClass(MCCEbizh120102ServiceImpl.class, BizHelper.getAkb020());
+//			List<Kcg4DTO> kcg4DTO = mCCEbizh120102Service.loadDiagnoseInfosByAaz217(aaz217, BizHelper.getAkb020());
+			List<Kcg4DTO> kcg4DTO = GanSuDemoUtils.loadDiagnoseInfos();
 			setJSONReturn(kcg4DTO);
 			return NONE;
 		} catch (Exception e) {

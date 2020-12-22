@@ -449,10 +449,10 @@
 			if (!checkForm()) {
 				return;
 			}
-			var kcd1id = powersi.trim($("#kcd1id").val());
-			if (powersi.isnull(kcd1id)) {
-				return;
-			}
+			// var kcd1id = powersi.trim($("#kcd1id").val());
+			// if (powersi.isnull(kcd1id)) {
+			// 	return;
+			// }
 			var aka128 = powersi.trim($("#aka128").val());
 			var bka006 = powersi.trim($("#bka006").val());
 			var aaz217 = powersi.trim($("#aaz217").val());
@@ -584,11 +584,11 @@
 			if (window.event.keyCode == 13) {
 				var querystring = powersi.trim($("#querystring").val());
 				var argName = $("#argName").val();
-				if('aac002'==argName){//如果是身份证获取人员信息，需先校验身份信息
-					__isPing(identify(querystring));
-				}else{
+				// if('aac002'==argName){//如果是身份证获取人员信息，需先校验身份信息
+				// 	__isPing(identify(querystring));
+				// }else{
 					getPerson(querystring);
-				}
+				// }
 			}
 		}
 		
