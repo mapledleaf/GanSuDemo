@@ -60,6 +60,7 @@ public class Test {
         System.out.println("A02323".matches(reg));
         System.out.println("A04323".matches(reg));
         System.out.println("6666");
+        System.out.println("6666");
 
     }
 
